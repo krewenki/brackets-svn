@@ -186,7 +186,7 @@ define(function (require, exports) {
             $icon.removeClass("loading").removeAttr("title");
 
             // Try to get Git version, if succeeds then Git works
-            Setup.findGit().then(function (version) {
+            Setup.findSvn().then(function (version) {
                 Strings.GIT_VERSION = version;
                 initUi();
             }).catch(function (err) {

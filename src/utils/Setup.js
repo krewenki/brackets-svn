@@ -6,29 +6,26 @@ define(function (require, exports) {
 
     // Local modules
     var Cli = require("src/Cli");
-    var Git = require("src/svn/Svn");
+    var Svn = require("src/svn/Svn");
     var Preferences = require("src/Preferences");
     var Promise = require("bluebird");
 
     // Templates
 
     // Module variables
-    var standardGitPathsWin = [
-        "C:\\Program Files (x86)\\Git\\bin\\git.exe",
-        "C:\\Program Files\\Git\\bin\\git.exe",
+    var standardSvnPathsWin = [
     ];
 
-    var standardGitPathsNonWin = [
-        "/usr/local/git/bin/git",
-        "/usr/bin/git"
+    var standardSvnPathsNonWin = [
+        "/usr/bin/svn"
     ];
 
     // Implementation
-    function findGit() {
+    function findSvn() {
         return new Promise(function (resolve, reject) {
 
             // TODO: do this in two steps - first check user config and then check all
-            var pathsToLook = ["git", Preferences.get("gitPath")].concat(brackets.platform === "win" ? standardGitPathsWin : standardGitPathsNonWin);
+            var pathsToLook = ["Svn", Preferences.get("SvnPath")].concat(brackets.platform === "win" ? standardSvnPathsWin : standardSvnPathsNonWin);
             pathsToLook = _.unique(_.compact(pathsToLook));
 
             var results = [],
@@ -38,33 +35,33 @@ define(function (require, exports) {
                 var searchedPaths = "\n\nSearched paths:\n" + pathsToLook.join("\n");
 
                 if (results.length === 0) {
-                    // no git found
-                    reject("No Git has been found on this computer" + searchedPaths);
+                    // no Svn found
+                    reject("No Svn has been found on this computer" + searchedPaths);
                 } else {
-                    // at least one git is found
-                    var gits = _.sortBy(results, "version").reverse(),
-                        latestGit = gits[0],
-                        m = latestGit.version.match(/([0-9]+)\.([0-9]+)/),
+                    // at least one Svn is found
+                    var Svns = _.sortBy(results, "version").reverse(),
+                        latestSvn = Svns[0],
+                        m = latestSvn.version.match(/([0-9]+)\.([0-9]+)/),
                         major = parseInt(m[1], 10),
                         minor = parseInt(m[2], 10);
 
-                    if (major === 1 && minor < 8) {
-                        return reject("Brackets Git requires Git 1.8 or later - latest version found was " + latestGit.version + searchedPaths);
+                    if (major === 1 && minor < 7) {
+                        return reject("Brackets-svn requires svn 1.7 or later - latest version found was " + latestSvn.version + searchedPaths);
                     }
 
                     // prefer the first defined so it doesn't change all the time and confuse people
-                    latestGit = _.sortBy(_.filter(gits, function (git) { return git.version === latestGit.version; }), "index")[0];
+                    latestSvn = _.sortBy(_.filter(Svns, function (Svn) { return Svn.version === latestSvn.version; }), "index")[0];
 
                     // this will save the settings also
-                    Git.setGitPath(latestGit.path);
-                    resolve(latestGit.version);
+                    Svn.setSvnPath(latestSvn.path);
+                    resolve(latestSvn.version);
                 }
 
             });
 
             pathsToLook.forEach(function (path, index) {
                 Cli.spawnCommand(path, ["--version"]).then(function (stdout) {
-                    var m = stdout.match(/^git version\s+(.*)$/);
+                    var m = stdout.match(/^svn,  version\s+(.*)$/);
                     if (m) {
                         results.push({
                             path: path,
@@ -86,6 +83,6 @@ define(function (require, exports) {
     }
 
     // Public API
-    exports.findGit = findGit;
+    exports.findSvn = findSvn;
 
 });
