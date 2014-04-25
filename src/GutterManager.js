@@ -307,7 +307,7 @@ define(function (require, exports) {
         });
 
     // Event handlers
-    EventEmitter.on(Events.GIT_ENABLED, function () {
+    EventEmitter.on(Events.SVN_ENABLED, function () {
         guttersEnabled = true;
         refresh();
     });

@@ -50,7 +50,7 @@ define(function (require, exports) {
                     }
 
                     // prefer the first defined so it doesn't change all the time and confuse people
-                    latestSvn = _.sortBy(_.filter(Svns, function (Svn) { return Svn.version === latestSvn.version; }), "index")[0];
+                    latestSvn = _.sortBy(_.filter(Svns, function (svn) { return svn.version === latestSvn.version; }), "index")[0];
 
                     // this will save the settings also
                     Svn.setSvnPath(latestSvn.path);

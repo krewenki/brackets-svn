@@ -16,14 +16,6 @@ define(function (require, exports) {
         return GitCli.push(remoteName, remoteBranch, ["--set-upstream"]);
     }
 
-    function getRemoteUrl(remote) {
-        return GitCli.getConfig("remote." + remote + ".url");
-    }
-
-    function setRemoteUrl(remote, url) {
-        return GitCli.setConfig("remote." + remote + ".url", url);
-    }
-
     function sortBranches(branches) {
         return branches.sort(function (a, b) {
             var ar = a.remote || "",
@@ -172,8 +164,6 @@ define(function (require, exports) {
     exports.isProjectRepositoryRoot = isProjectRepositoryRoot;
     exports.getMergeInfo            = getMergeInfo;
     exports.discardFileChanges      = discardFileChanges;
-    exports.getRemoteUrl            = getRemoteUrl;
-    exports.setRemoteUrl            = setRemoteUrl;
     exports.pushForced              = pushForced;
     exports.deleteRemoteBranch      = deleteRemoteBranch;
     exports.undoLastLocalCommit     = undoLastLocalCommit;

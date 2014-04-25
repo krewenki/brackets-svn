@@ -42,7 +42,7 @@ define(function (require, exports) {
             .appendTo("#working-set-header");
     }
 
-    EventEmitter.on(Events.GIT_ENABLED, function () {
+    EventEmitter.on(Events.SVN_ENABLED, function () {
         $icon.show();
     });
 

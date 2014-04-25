@@ -52,7 +52,7 @@ define(function (require, exports, module) {
     });
 
     // Register command and add it to the menu.
-    var SETTINGS_COMMAND_ID = "brackets-git.settings";
+    var SETTINGS_COMMAND_ID = "brackets-svn.settings";
     CommandManager.register(Strings.GIT_SETTINGS, SETTINGS_COMMAND_ID, SettingsDialog.show);
     Menus.getMenu(Menus.AppMenuBar.FILE_MENU).addMenuItem(SETTINGS_COMMAND_ID, "", Menus.AFTER, Commands.FILE_PROJECT_SETTINGS);
 

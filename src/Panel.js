@@ -22,7 +22,7 @@ define(function (require, exports) {
         PanelManager       = brackets.getModule("view/PanelManager"),
         ProjectManager     = brackets.getModule("project/ProjectManager"),
         StringUtils        = brackets.getModule("utils/StringUtils"),
-        Git                = require("src/svn/Svn"),
+        Svn                = require("src/svn/Svn"),
         Events             = require("./Events"),
         EventEmitter       = require("./EventEmitter"),
         Preferences        = require("./Preferences"),
@@ -144,7 +144,7 @@ define(function (require, exports) {
                 .attr("title", !bool ? Strings.AMEND_COMMIT_FORBIDDEN : null);
         };
         toggleAmendCheckbox(false);
-        Git.getCommitsAhead().then(function (commits) {
+        Svn.getCommitsAhead().then(function (commits) {
             toggleAmendCheckbox(commits.length > 0);
         });
 
@@ -223,7 +223,7 @@ define(function (require, exports) {
             if ($(this).prop("checked") === false) {
                 prefillMessage("");
             } else {
-                Git.getLastCommitMessage().then(function (msg) {
+                Svn.getLastCommitMessage().then(function (msg) {
                     prefillMessage(msg);
                 });
             }
@@ -261,7 +261,7 @@ define(function (require, exports) {
                 // now we are going to be paranoid and we will check if some mofo didn't change our diff
                 _getStagedDiff().then(function (diff) {
                     if (diff === stagedDiff) {
-                        return Git.commit(commitMessage, amendCommit);
+                        return Svn.commit(commitMessage, amendCommit);
                     } else {
                         throw new Error("Index was changed while commit dialog was shown!");
                     }
@@ -274,7 +274,7 @@ define(function (require, exports) {
 
             } else {
                 // this will trigger refreshing where appropriate
-                Git.status();
+                Svn.status();
             }
         });
     }
@@ -339,7 +339,7 @@ define(function (require, exports) {
             return;
         }
 
-        Git.getBlame(filePath, fromLine, toLine).then(function (blame) {
+        Svn.getBlame(filePath, fromLine, toLine).then(function (blame) {
             return _showAuthors(filePath, blame, fromLine, toLine);
         }).catch(function (err) {
             ErrorHandler.showError(err, "Git Blame failed");
@@ -348,7 +348,7 @@ define(function (require, exports) {
 
     function handleAuthorsFile() {
         var filePath = _getCurrentFilePath();
-        Git.getBlame(filePath).then(function (blame) {
+        Svn.getBlame(filePath).then(function (blame) {
             return _showAuthors(filePath, blame);
         }).catch(function (err) {
             ErrorHandler.showError(err, "Git Blame failed");
@@ -356,7 +356,7 @@ define(function (require, exports) {
     }
 
     function handleGitDiff(file) {
-        Git.diffFileNice(file).then(function (diff) {
+        Svn.diffFileNice(file).then(function (diff) {
             // show the dialog with the diff
             var compiledTemplate = Mustache.render(gitDiffDialogTemplate, { file: file, Strings: Strings }),
                 dialog           = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
@@ -376,7 +376,7 @@ define(function (require, exports) {
         });
         Dialogs.showModalDialogUsingTemplate(compiledTemplate).done(function (buttonId) {
             if (buttonId === "ok") {
-                Git.discardFileChanges(file).then(function () {
+                Svn.discardFileChanges(file).then(function () {
                     var currentProjectRoot = Utils.getProjectRoot();
                     DocumentManager.getAllOpenDocuments().forEach(function (doc) {
                         if (doc.file.fullPath === currentProjectRoot + file) {
@@ -485,7 +485,7 @@ define(function (require, exports) {
             if (clearWholeFile) {
                 _cleanLines(null);
             } else {
-                Git.diffFile(filename).then(function (diff) {
+                Svn.diffFile(filename).then(function (diff) {
                     if (!diff) { return resolve(); }
                     var modified = [],
                         changesets = diff.split("\n").filter(function (l) { return l.match(/^@@/) !== null; });
@@ -509,9 +509,9 @@ define(function (require, exports) {
     }
 
     function _getStagedDiff() {
-        return Git.getDiffOfStagedFiles().then(function (diff) {
+        return Svn.getDiffOfStagedFiles().then(function (diff) {
             if (!diff) {
-                return Git.getListOfStagedFiles().then(function (filesList) {
+                return Svn.getListOfStagedFiles().then(function (filesList) {
                     return Strings.DIFF_FAILED_SEE_FILES + "\n\n" + filesList;
                 });
             }
@@ -521,7 +521,7 @@ define(function (require, exports) {
 
     // whatToDo gets values "continue" "skip" "abort"
     function handleRebase(whatToDo) {
-        Git.rebase(whatToDo).then(function () {
+        Svn.rebase(whatToDo).then(function () {
             EventEmitter.emit(Events.REFRESH_ALL);
         }).catch(function (err) {
             ErrorHandler.showError(err, "Rebase " + whatToDo + " failed");
@@ -529,7 +529,7 @@ define(function (require, exports) {
     }
 
     function abortMerge() {
-        Git.discardAllChanges().then(function () {
+        Svn.discardAllChanges().then(function () {
             EventEmitter.emit(Events.REFRESH_ALL);
         }).catch(function (err) {
             ErrorHandler.showError(err, "Merge abort failed");
@@ -556,9 +556,9 @@ define(function (require, exports) {
         Utils.setLoading($gitPanel.find(".git-commit"));
 
         // First reset staged files, then add selected files to the index.
-        Git.status().then(function (files) {
+        Svn.status().then(function (files) {
             files = _.filter(files, function (file) {
-                return file.status.indexOf(Git.FILE_STATUS.STAGED) !== -1;
+                return file.status.indexOf(Svn.FILE_STATUS.STAGED) !== -1;
             });
 
             if (files.length === 0) {
@@ -570,7 +570,7 @@ define(function (require, exports) {
             files.forEach(function (fileObj) {
                 var queue = Promise.resolve();
 
-                var isDeleted = fileObj.status.indexOf(Git.FILE_STATUS.DELETED) !== -1,
+                var isDeleted = fileObj.status.indexOf(Svn.FILE_STATUS.DELETED) !== -1,
                     updateIndex = isDeleted;
 
                 // strip whitespace if configured to do so and file was not deleted
@@ -579,8 +579,8 @@ define(function (require, exports) {
                     var langId = LanguageManager.getLanguageForPath(fileObj.file).getId();
                     if (["unknown", "binary", "image", "markdown"].indexOf(langId) === -1) {
                         queue = queue.then(function () {
-                            var clearWholeFile = fileObj.status.indexOf(Git.FILE_STATUS.UNTRACKED) !== -1 ||
-                                                 fileObj.status.indexOf(Git.FILE_STATUS.RENAMED) !== -1;
+                            var clearWholeFile = fileObj.status.indexOf(Svn.FILE_STATUS.UNTRACKED) !== -1 ||
+                                                 fileObj.status.indexOf(Svn.FILE_STATUS.RENAMED) !== -1;
                             return stripWhitespaceFromFile(fileObj.file, clearWholeFile);
                         });
                     }
@@ -590,7 +590,7 @@ define(function (require, exports) {
                     // stage the files again to include stripWhitespace changes
                     // do not stage deleted files
                     if (!isDeleted) {
-                        return Git.stage(fileObj.file, updateIndex);
+                        return Svn.stage(fileObj.file, updateIndex);
                     }
                 });
 
@@ -654,7 +654,7 @@ define(function (require, exports) {
             return shouldShow(file);
         });
 
-        var allStaged = files.length > 0 && _.all(files, function (file) { return file.status.indexOf(Git.FILE_STATUS.STAGED) !== -1; });
+        var allStaged = files.length > 0 && _.all(files, function (file) { return file.status.indexOf(Svn.FILE_STATUS.STAGED) !== -1; });
         $gitPanel.find(".check-all").prop("checked", allStaged).prop("disabled", files.length === 0);
 
         var $editedList = $tableContainer.find(".git-edited-list");
@@ -667,19 +667,19 @@ define(function (require, exports) {
             // if desired, remove untracked files from the results
             if (showingUntracked === false) {
                 files = _.filter(files, function (file) {
-                    return file.status.indexOf(Git.FILE_STATUS.UNTRACKED) === -1;
+                    return file.status.indexOf(Svn.FILE_STATUS.UNTRACKED) === -1;
                 });
             }
             // -
             files.forEach(function (file) {
-                file.staged = file.status.indexOf(Git.FILE_STATUS.STAGED) !== -1;
+                file.staged = file.status.indexOf(Svn.FILE_STATUS.STAGED) !== -1;
                 file.statusText = file.status.map(function (status) {
                     return Strings["FILE_" + status];
                 }).join(", ");
-                file.allowDiff = file.status.indexOf(Git.FILE_STATUS.UNTRACKED) === -1 &&
-                                 file.status.indexOf(Git.FILE_STATUS.RENAMED) === -1 &&
-                                 file.status.indexOf(Git.FILE_STATUS.DELETED) === -1;
-                file.allowDelete = file.status.indexOf(Git.FILE_STATUS.UNTRACKED) !== -1;
+                file.allowDiff = file.status.indexOf(Svn.FILE_STATUS.UNTRACKED) === -1 &&
+                                 file.status.indexOf(Svn.FILE_STATUS.RENAMED) === -1 &&
+                                 file.status.indexOf(Svn.FILE_STATUS.DELETED) === -1;
+                file.allowDelete = file.status.indexOf(Svn.FILE_STATUS.UNTRACKED) !== -1;
                 file.allowUndo = !file.allowDelete;
             });
             $tableContainer.append(Mustache.render(gitPanelResultsTemplate, {
@@ -705,11 +705,11 @@ define(function (require, exports) {
         $tableContainer.find("#git-history-list").remove();
         $tableContainer.find(".git-edited-list").show();
 
-        var p1 = Git.status();
+        var p1 = Svn.status();
 
         //- push button
         var $pushBtn = $gitPanel.find(".git-push");
-        var p2 = Git.getCommitsAhead().then(function (commits) {
+        var p2 = Svn.getCommitsAhead().then(function (commits) {
             $pushBtn.children("span").remove();
             if (commits.length > 0) {
                 $pushBtn.append($("<span/>").text(" (" + commits.length + ")"));
@@ -757,14 +757,14 @@ define(function (require, exports) {
     function commitCurrentFile() {
         return Promise.cast(CommandManager.execute("file.save"))
             .then(function () {
-                return Git.resetIndex();
+                return Svn.resetIndex();
             })
             .then(function () {
                 var currentProjectRoot = Utils.getProjectRoot();
                 var currentDoc = DocumentManager.getCurrentDocument();
                 if (currentDoc) {
                     var relativePath = currentDoc.file.fullPath.substring(currentProjectRoot.length);
-                    return Git.stage(relativePath).then(function () {
+                    return Svn.stage(relativePath).then(function () {
                         return handleGitCommit();
                     });
                 }
@@ -774,10 +774,10 @@ define(function (require, exports) {
     function commitAllFiles() {
         return Promise.cast(CommandManager.execute("file.saveAll"))
             .then(function () {
-                return Git.resetIndex();
+                return Svn.resetIndex();
             })
             .then(function () {
-                return Git.stageAll().then(function () {
+                return Svn.stageAll().then(function () {
                     return handleGitCommit();
                 });
             });
@@ -785,7 +785,7 @@ define(function (require, exports) {
 
     // Disable "commit" button if there aren't staged files to commit
     function _toggleCommitButton(files) {
-        var anyStaged = _.any(files, function (file) { return file.status.indexOf(Git.FILE_STATUS.STAGED) !== -1; });
+        var anyStaged = _.any(files, function (file) { return file.status.indexOf(Svn.FILE_STATUS.STAGED) !== -1; });
         $gitPanel.find(".git-commit").prop("disabled", !anyStaged);
     }
 
@@ -795,7 +795,7 @@ define(function (require, exports) {
     });
 
     function undoLastLocalCommit() {
-        Git.undoLastLocalCommit()
+        Svn.undoLastLocalCommit()
             .catch(function (err) {
                 ErrorHandler.showError(err, "Impossible to undo last commit");
             })
@@ -835,10 +835,10 @@ define(function (require, exports) {
                                 method = isChecked ? "stage" : "unstage",
                                 file = $this.attr("x-file"),
                                 status = $this.attr("x-status");
-                            return Git[method](file, status === Git.FILE_STATUS.DELETED);
+                            return Git[method](file, status === Svn.FILE_STATUS.DELETED);
                         }).toArray();
                         return Promise.all(promises).then(function () {
-                            return Git.status();
+                            return Svn.status();
                         }).catch(function (err) {
                             ErrorHandler.showError(err, "Modifying file status failed");
                         });
@@ -848,12 +848,12 @@ define(function (require, exports) {
                 lastCheckOneClicked = file;
 
                 if (isChecked) {
-                    Git.stage(file, status === Git.FILE_STATUS.DELETED).then(function () {
-                        Git.status();
+                    Svn.stage(file, status === Svn.FILE_STATUS.DELETED).then(function () {
+                        Svn.status();
                     });
                 } else {
-                    Git.unstage(file).then(function () {
-                        Git.status();
+                    Svn.unstage(file).then(function () {
+                        Svn.status();
                     });
                 }
             })
@@ -874,7 +874,7 @@ define(function (require, exports) {
             })
             .on("click", ".modified-file", function (e) {
                 var $this = $(e.currentTarget);
-                if ($this.attr("x-status") === Git.FILE_STATUS.DELETED) {
+                if ($this.attr("x-status") === Svn.FILE_STATUS.DELETED) {
                     return;
                 }
                 CommandManager.execute(Commands.FILE_OPEN, {
@@ -883,7 +883,7 @@ define(function (require, exports) {
             })
             .on("dblclick", ".modified-file", function (e) {
                 var $this = $(e.currentTarget);
-                if ($this.attr("x-status") === Git.FILE_STATUS.DELETED) {
+                if ($this.attr("x-status") === Svn.FILE_STATUS.DELETED) {
                     return;
                 }
                 FileViewController.addToWorkingSetAndSelect(Utils.getProjectRoot() + $this.attr("x-file"));
@@ -892,11 +892,11 @@ define(function (require, exports) {
     }
 
     function changeUserName() {
-        return Git.getConfig("user.name").then(function (currentUserName) {
+        return Svn.getConfig("user.name").then(function (currentUserName) {
             return Utils.askQuestion(Strings.CHANGE_USER_NAME, Strings.ENTER_NEW_USER_NAME, {defaultValue: currentUserName})
                 .then(function (userName) {
                     if (!userName.length) { userName = currentUserName; }
-                    return Git.setConfig("user.name", userName).catch(function (err) {
+                    return Svn.setConfig("user.name", userName).catch(function (err) {
                         ErrorHandler.showError(err, "Impossible change username");
                     }).then(function () {
                         EventEmitter.emit(Events.GIT_USERNAME_CHANGED, userName);
@@ -906,11 +906,11 @@ define(function (require, exports) {
     }
 
     function changeUserEmail() {
-        return Git.getConfig("user.email").then(function (currentUserEmail) {
+        return Svn.getConfig("user.email").then(function (currentUserEmail) {
             return Utils.askQuestion(Strings.CHANGE_USER_EMAIL, Strings.ENTER_NEW_USER_EMAIL, {defaultValue: currentUserEmail})
                 .then(function (userEmail) {
                     if (!userEmail.length) { userEmail = currentUserEmail; }
-                    return Git.setConfig("user.email", userEmail).catch(function (err) {
+                    return Svn.setConfig("user.email", userEmail).catch(function (err) {
                         ErrorHandler.showError(err, "Impossible change user email");
                     }).then(function () {
                         EventEmitter.emit(Events.GIT_EMAIL_CHANGED, userEmail);
@@ -923,7 +923,7 @@ define(function (require, exports) {
         return Utils.askQuestion(Strings.RESET_LOCAL_REPO, Strings.RESET_LOCAL_REPO_CONFIRM, { booleanResponse: true })
             .then(function (response) {
                 if (response) {
-                    return Git.discardAllChanges().catch(function (err) {
+                    return Svn.discardAllChanges().catch(function (err) {
                         ErrorHandler.showError(err, "Reset of local repository failed");
                     }).then(function () {
                         refresh();
@@ -950,12 +950,12 @@ define(function (require, exports) {
             .on("click", ".close", toggle)
             .on("click", ".check-all", function () {
                 if ($(this).is(":checked")) {
-                    return Git.stageAll().then(function () {
-                        Git.status();
+                    return Svn.stageAll().then(function () {
+                        Svn.status();
                     });
                 } else {
-                    return Git.resetIndex().then(function () {
-                        Git.status();
+                    return Svn.resetIndex().then(function () {
+                        Svn.status();
                     });
                 }
             })
@@ -1055,7 +1055,7 @@ define(function (require, exports) {
     }
 
     function enable() {
-        EventEmitter.emit(Events.GIT_ENABLED);
+        EventEmitter.emit(Events.SVN_ENABLED);
         // this function is called after every Branch.refresh
         gitPanelMode = null;
         //
@@ -1102,12 +1102,12 @@ define(function (require, exports) {
         $gitPanel.find(".git-push").prop("disabled", true);
     });
 
-    EventEmitter.on(Events.GIT_ENABLED, function () {
+    EventEmitter.on(Events.SVN_ENABLED, function () {
         // Add info from Git to panel
-        Git.getConfig("user.name").then(function (currentUserName) {
+        Svn.getConfig("user.name").then(function (currentUserName) {
             EventEmitter.emit(Events.GIT_USERNAME_CHANGED, currentUserName);
         });
-        Git.getConfig("user.email").then(function (currentEmail) {
+        Svn.getConfig("user.email").then(function (currentEmail) {
             EventEmitter.emit(Events.GIT_EMAIL_CHANGED, currentEmail);
         });
     });

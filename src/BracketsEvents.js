@@ -10,7 +10,7 @@ define(function (require) {
     // Local modules
     var Events        = require("src/Events"),
         EventEmitter  = require("src/EventEmitter"),
-        Git           = require("src/svn/Svn"),
+        Svn           = require("src/svn/Svn"),
         HistoryViewer = require("src/HistoryViewer"),
         Utils         = require("src/Utils");
 
@@ -22,7 +22,7 @@ define(function (require) {
     // and that is 100ms after the last call
     var refreshStatus = _.debounce(function () {
         // Extension parts should listen to GIT_STATUS_RESULTS
-        Git.status();
+        Svn.status();
     }, 100);
 
     function attachGitOnlyEvents() {
@@ -33,7 +33,7 @@ define(function (require) {
         $("#open-files-container").off("contentChanged", refreshStatus);
     }
 
-    EventEmitter.on(Events.GIT_ENABLED, function () {
+    EventEmitter.on(Events.SVN_ENABLED, function () {
         attachGitOnlyEvents();
     });
 

@@ -1,10 +1,10 @@
 /*jshint maxstatements:false*/
 
 /*
-    This module is used to communicate with Git through Cli
-    Output string from Git should always be parsed here
+    This module is used to communicate with svn through Cli
+    Output string from svn should always be parsed here
     to provide more sensible outputs than just plain strings.
-    Format of the output should be specified in Git.js
+    Format of the output should be specified in Svn.js
 */
 define(function (require, exports) {
 
@@ -67,7 +67,7 @@ define(function (require, exports) {
             defer = item[0],
             args  = item[1],
             opts  = item[2];
-        // execute git command in a queue so no two commands are running at the same time
+        // execute svn command in a queue so no two commands are running at the same time
         _svnQueueBusy = true;
         Cli.spawnCommand(getSvnPath(), args, opts)
             .progressed(function () {
@@ -95,7 +95,7 @@ define(function (require, exports) {
     }
 
     /*
-        git branch
+        svn branch
         -d --delete Delete a branch.
         -D Delete a branch irrespective of its merged status.
         --no-color Turn off branch colors
@@ -108,22 +108,22 @@ define(function (require, exports) {
     function setUpstreamBranch(remoteName, remoteBranch) {
         if (!remoteName) { throw new TypeError("remoteName argument is missing!"); }
         if (!remoteBranch) { throw new TypeError("remoteBranch argument is missing!"); }
-        return git(["branch", "--no-color", "-u", remoteName + "/" + remoteBranch]);
+        return svn(["branch", "--no-color", "-u", remoteName + "/" + remoteBranch]);
     }
 
     function branchDelete(branchName) {
-        return git(["branch", "--no-color", "-d", branchName]);
+        return svn(["branch", "--no-color", "-d", branchName]);
     }
 
     function forceBranchDelete(branchName) {
-        return git(["branch", "--no-color", "-D", branchName]);
+        return svn(["branch", "--no-color", "-D", branchName]);
     }
 
     function getBranches(moreArgs) {
         var args = ["branch", "--no-color"];
         if (moreArgs) { args = args.concat(moreArgs); }
 
-        return git(args).then(function (stdout) {
+        return svn(args).then(function (stdout) {
             if (!stdout) { return []; }
             return stdout.split("\n").reduce(function (arr, l) {
                 var name = l.trim(),
@@ -165,65 +165,6 @@ define(function (require, exports) {
         });
     }
 
-    function getAllBranches() {
-        return getBranches(["-a"]);
-    }
-
-    /*
-        git fetch
-        --all Fetch all remotes.
-        --dry-run Show what would be done, without making any changes.
-        --multiple Allow several <repository> and <group> arguments to be specified. No <refspec>s may be specified.
-        --prune After fetching, remove any remote-tracking references that no longer exist on the remote.
-        --progress This flag forces progress status even if the standard error stream is not directed to a terminal.
-    */
-
-    function fetchRemote(remote) {
-        return git(["fetch", "--progress", remote]);
-    }
-
-    function fetchAllRemotes() {
-        return git(["fetch", "--progress", "--all"]);
-    }
-
-    /*
-        git remote
-        add Adds a remote named <name> for the repository at <url>.
-        rename Rename the remote named <old> to <new>.
-        remove Remove the remote named <name>.
-        show Gives some information about the remote <name>.
-        prune Deletes all stale remote-tracking branches under <name>.
-
-    */
-
-    function getRemotes() {
-        return git(["remote", "-v"])
-            .then(function (stdout) {
-                return !stdout ? [] : _.uniq(stdout.replace(/\((push|fetch)\)/g, "").split("\n")).map(function (l) {
-                    var s = l.trim().split("\t");
-                    return {
-                        name: s[0],
-                        url: s[1]
-                    };
-                });
-            });
-    }
-
-    function createRemote(name, url) {
-        return git(["remote", "add", name, url])
-            .then(function () {
-                // stdout is empty so just return success
-                return true;
-            });
-    }
-
-    function deleteRemote(name) {
-        return git(["remote", "rm", name])
-            .then(function () {
-                // stdout is empty so just return success
-                return true;
-            });
-    }
 
     /*
         git pull
@@ -247,7 +188,7 @@ define(function (require, exports) {
             });
         };
 
-        return git(args)
+        return svn(args)
             .then(function (stdout) {
                 // return stdout if available - usually not
                 if (stdout) { return stdout; }
@@ -265,21 +206,13 @@ define(function (require, exports) {
             });
     }
 
-    function rebaseRemote(remote, branch) {
-        return git(["rebase", remote + "/" + branch]);
-    }
 
-    function resetRemote(remote, branch) {
-        return git(["reset", "--soft", remote + "/" + branch]).then(function (stdout) {
-            return stdout || "Current branch was resetted to branch " + branch + " from " + remote;
-        });
-    }
 
     function mergeBranch(branchName, mergeMessage) {
         var args = ["merge", "--no-ff"];
         if (mergeMessage && mergeMessage.trim()) { args.push("-m", mergeMessage); }
         args.push(branchName);
-        return git(args);
+        return svn(args);
     }
 
     /*
@@ -316,7 +249,7 @@ define(function (require, exports) {
             args.push(remoteBranch);
         }
 
-        return git(args)
+        return svn(args)
             .then(function (stdout) {
                 var retObj = {},
                     lines = stdout.split("\n"),
@@ -357,7 +290,7 @@ define(function (require, exports) {
     }
 
     function getCurrentBranchName() {
-        return git(["branch"]).then(function (stdout) {
+        return svn(["branch"]).then(function (stdout) {
             var branchName = _.find(stdout.split("\n"), function (l) { return l[0] === "*"; });
             if (branchName) {
                 branchName = branchName.substring(1).trim();
@@ -374,7 +307,7 @@ define(function (require, exports) {
             }
 
             // alternative
-            return git(["log", "--pretty=format:%H %d", "-1"]).then(function (stdout) {
+            return svn(["log", "--pretty=format:%H %d", "-1"]).then(function (stdout) {
                 var m = stdout.trim().match(/^(\S+)\s+\((.*)\)$/);
                 var hash = m[1].substring(0, 20);
                 m[2].split(",").forEach(function (info) {
@@ -396,7 +329,7 @@ define(function (require, exports) {
     }
 
     function getCurrentUpstreamBranch() {
-        return git(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"])
+        return svn(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"])
             .catch(function () {
                 return null;
             });
@@ -404,7 +337,7 @@ define(function (require, exports) {
 
     // Get list of deleted files between two branches
     function getDeletedFiles(oldBranch, newBranch) {
-        return git(["diff", "--name-status", oldBranch + ".." + newBranch])
+        return svn(["diff", "--name-status", oldBranch + ".." + newBranch])
             .then(function (stdout) {
                 var regex = /^D/;
                 return stdout.split("\n").reduce(function (arr, row) {
@@ -417,11 +350,11 @@ define(function (require, exports) {
     }
 
     function getConfig(key) {
-        return git(["config", key.replace(/\s/g, "")]);
+        return svn(["config", key.replace(/\s/g, "")]);
     }
 
     function setConfig(key, value) {
-        return git(["config", key.replace(/\s/g, ""), value]);
+        return svn(["config", key.replace(/\s/g, ""), value]);
     }
 
     function getHistory(branch, skipCommits, file) {
@@ -445,7 +378,7 @@ define(function (require, exports) {
         // if (file) { args.push("--follow"); }
         if (file) { args.push(file); }
 
-        return git(args).then(function (stdout) {
+        return svn(args).then(function (stdout) {
             stdout = stdout.substring(0, stdout.length - newline.length);
             return !stdout ? [] : stdout.split(newline).map(function (line) {
 
@@ -467,22 +400,22 @@ define(function (require, exports) {
     }
 
     function init() {
-        return git(["init"]);
+        return svn(["init"]);
     }
 
     function clone(remoteGitUrl, destinationFolder) {
-        return git(["clone", remoteGitUrl, destinationFolder, "--progress"]);
+        return svn(["clone", remoteGitUrl, destinationFolder, "--progress"]);
     }
 
     function stage(file, updateIndex) {
         var args = ["add"];
         if (updateIndex) { args.push("-u"); }
         args.push("--", file);
-        return git(args);
+        return svn(args);
     }
 
     function stageAll() {
-        return git(["add", "--all"]);
+        return svn(["add", "--all"]);
     }
 
     function commit(message, amend) {
@@ -495,7 +428,7 @@ define(function (require, exports) {
 
         if (lines.length === 1) {
             args.push("-m", message);
-            return git(args);
+            return svn(args);
         } else {
             return new Promise(function (resolve, reject) {
                 // FUTURE: maybe use git commit --file=-
@@ -503,7 +436,7 @@ define(function (require, exports) {
                 Promise.cast(FileUtils.writeText(fileEntry, message))
                     .then(function () {
                         args.push("-F", ".bracketsGitTemp");
-                        return git(args);
+                        return svn(args);
                     })
                     .then(function (res) {
                         fileEntry.unlink(function () {
@@ -519,18 +452,8 @@ define(function (require, exports) {
         }
     }
 
-    function reset(type, hash) {
-        var args = ["reset", type || "--mixed"]; // mixed is the default action
-        if (hash) { args.push(hash, "--"); }
-        return git(args);
-    }
-
-    function unstage(file) {
-        return git(["reset", "--", file]);
-    }
-
     function checkout(hash) {
-        return git(["checkout", hash], {
+        return svn(["checkout", hash], {
             timeout: false // never timeout this
         });
     }
@@ -545,7 +468,7 @@ define(function (require, exports) {
             args.push(originBranch);
         }
 
-        return git(args);
+        return svn(args);
     }
 
     function _unquote(str) {
@@ -556,13 +479,14 @@ define(function (require, exports) {
     }
 
     function status(type) {
-        return git(["status", "-u", "--porcelain"]).then(function (stdout) {
+        return svn(["status", "-u"]).then(function (stdout) {
             if (!stdout) { return []; }
 
             // files that are modified both in index and working tree should be resetted
             var needReset = [],
                 results = [],
                 lines = stdout.split("\n");
+				lines.pop();
 
             lines.forEach(function (line) {
                 var statusStaged = line.substring(0, 1),
@@ -573,6 +497,7 @@ define(function (require, exports) {
                 if (statusStaged !== " " && statusUnstaged !== " " &&
                     statusStaged !== "?" && statusUnstaged !== "?") {
                     needReset.push(file);
+					console.log(file, statusStaged);
                     return;
                 }
 
@@ -659,21 +584,14 @@ define(function (require, exports) {
         });
     }
 
-    function _isFileStaged(file) {
-        return git(["status", "-u", "--porcelain", "--", file]).then(function (stdout) {
-            if (!stdout) { return false; }
-            return _.any(stdout.split("\n"), function (line) {
-                return line.match("^(\\S)(.)\\s+(" + file + ")$") !== null;
-            });
-        });
-    }
+
 
     function getDiffOfStagedFiles() {
-        return git(["diff", "--no-color", "--staged"]);
+        return svn(["diff", "--no-color", "--staged"]);
     }
 
     function getListOfStagedFiles() {
-        return git(["diff", "--no-color", "--staged", "--name-only"]);
+        return svn(["diff", "--no-color", "--staged", "--name-only"]);
     }
 
     function diffFile(file) {
@@ -681,7 +599,7 @@ define(function (require, exports) {
             var args = ["diff", "--no-color"];
             if (staged) { args.push("--staged"); }
             args.push("-U0", "--", file);
-            return git(args);
+            return svn(args);
         });
     }
 
@@ -690,47 +608,47 @@ define(function (require, exports) {
             var args = ["diff", "--no-color"];
             if (staged) { args.push("--staged"); }
             args.push(file);
-            return git(args);
+            return svn(args);
         });
     }
 
     function clean() {
-        return git(["clean", "-f", "-d"]);
+        return svn(["clean", "-f", "-d"]);
     }
 
     function getFilesFromCommit(hash) {
-        return git(["diff", "--name-only", hash + "^!"]).then(function (stdout) {
+        return svn(["diff", "--name-only", hash + "^!"]).then(function (stdout) {
             return !stdout ? [] : stdout.split("\n");
         });
     }
 
     function getDiffOfFileFromCommit(hash, file) {
-        return git(["diff", "--no-color", hash + "^!", "--", file]);
+        return svn(["diff", "--no-color", hash + "^!", "--", file]);
     }
 
     function rebaseInit(branchName) {
-        return git(["rebase", "--ignore-date", branchName]);
+        return svn(["rebase", "--ignore-date", branchName]);
     }
 
     function rebase(whatToDo) {
-        return git(["rebase", "--" + whatToDo]);
+        return svn(["rebase", "--" + whatToDo]);
     }
 
     function getVersion() {
-        return git(["--version"]).then(function (stdout) {
+        return svn(["--version"]).then(function (stdout) {
             var m = stdout.match(/[0-9].*/);
             return m ? m[0] : stdout.trim();
         });
     }
 
     function getCommitsAhead() {
-        return git(["rev-list", "HEAD", "--not", "--remotes"]).then(function (stdout) {
+        return svn(["rev-list", "HEAD", "--not", "--remotes"]).then(function (stdout) {
             return !stdout ? [] : stdout.split("\n");
         });
     }
 
     function getLastCommitMessage() {
-        return git(["log", "-1", "--pretty=%B"]).then(function (stdout) {
+        return svn(["log", "-1", "--pretty=%B"]).then(function (stdout) {
             return stdout.trim();
         });
     }
@@ -740,7 +658,7 @@ define(function (require, exports) {
         if (from || to) { args.push("-L" + from + "," + to); }
         args.push(file);
 
-        return git(args).then(function (stdout) {
+        return svn(args).then(function (stdout) {
             if (!stdout) { return []; }
 
             var sep  = "-@-BREAK-HERE-@-",
@@ -785,11 +703,6 @@ define(function (require, exports) {
     exports._svn                      = svn;
     exports.setSvnPath                = setSvnPath;
     exports.FILE_STATUS               = FILE_STATUS;
-    exports.fetchRemote               = fetchRemote;
-    exports.fetchAllRemotes           = fetchAllRemotes;
-    exports.getRemotes                = getRemotes;
-    exports.createRemote              = createRemote;
-    exports.deleteRemote              = deleteRemote;
     exports.push                      = push;
     exports.setUpstreamBranch         = setUpstreamBranch;
     exports.getCurrentBranchName      = getCurrentBranchName;
@@ -797,7 +710,6 @@ define(function (require, exports) {
     exports.getConfig                 = getConfig;
     exports.setConfig                 = setConfig;
     exports.getBranches               = getBranches;
-    exports.getAllBranches            = getAllBranches;
     exports.branchDelete              = branchDelete;
     exports.forceBranchDelete         = forceBranchDelete;
     exports.getDeletedFiles           = getDeletedFiles;
@@ -805,10 +717,8 @@ define(function (require, exports) {
     exports.init                      = init;
     exports.clone                     = clone;
     exports.stage                     = stage;
-    exports.unstage                   = unstage;
     exports.stageAll                  = stageAll;
     exports.commit                    = commit;
-    exports.reset                     = reset;
     exports.checkout                  = checkout;
     exports.createBranch              = createBranch;
     exports.status                    = status;
@@ -820,8 +730,6 @@ define(function (require, exports) {
     exports.rebase                    = rebase;
     exports.rebaseInit                = rebaseInit;
     exports.mergeRemote               = mergeRemote;
-    exports.rebaseRemote              = rebaseRemote;
-    exports.resetRemote               = resetRemote;
     exports.getVersion                = getVersion;
     exports.getCommitsAhead           = getCommitsAhead;
     exports.getLastCommitMessage      = getLastCommitMessage;

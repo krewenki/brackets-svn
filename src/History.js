@@ -333,7 +333,7 @@ define(function (require) {
     }
 
     // Event listeners
-    EventEmitter.on(Events.GIT_ENABLED, function () {
+    EventEmitter.on(Events.SVN_ENABLED, function () {
         initVariables();
     });
     EventEmitter.on(Events.GIT_DISABLED, function () {

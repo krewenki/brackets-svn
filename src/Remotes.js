@@ -291,7 +291,7 @@ define(function (require) {
     }
 
     // Event subscriptions
-    EventEmitter.on(Events.GIT_ENABLED, function () {
+    EventEmitter.on(Events.SVN_ENABLED, function () {
         initVariables();
         refreshRemotesPicker();
     });
