@@ -35,7 +35,6 @@ define(function (require, exports) {
     exports.HANDLE_REMOTE_PICK = "handle.remote.pick";
     exports.HANDLE_REMOTE_DELETE = "handle.remote.delete";
     exports.HANDLE_REMOTE_CREATE = "handle.remote.create";
-    exports.HANDLE_FTP_PUSH = "handle.ftp.push";
     exports.HISTORY_SHOW = "history.show";
 
     // Git results

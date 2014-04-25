@@ -31,7 +31,6 @@ define(function (require, exports, module) {
         "src/Remotes",
         "src/utils/Terminal"
     ];
-    if (Preferences.get("useGitFtp")) { modules.push("src/ftp/Ftp"); }
     require(modules);
 
     // Load CSS
