@@ -6,7 +6,7 @@ define(function (require, exports) {
 
     // Local modules
     var Cli = require("src/Cli");
-    var Git = require("src/git/Git");
+    var Git = require("src/svn/Svn");
     var Preferences = require("src/Preferences");
     var Promise = require("bluebird");
 

@@ -6,7 +6,7 @@ define(function (require, exports) {
 
     // Local modules
     var ErrorHandler    = require("src/ErrorHandler"),
-        Git             = require("src/git/Git"),
+        Git             = require("src/svn/Svn"),
         ProgressDialog  = require("src/dialogs/Progress"),
         URI             = require("URI");
 

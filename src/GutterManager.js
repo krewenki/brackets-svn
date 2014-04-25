@@ -10,7 +10,7 @@ define(function (require, exports) {
         ErrorHandler    = require("src/ErrorHandler"),
         Events          = require("src/Events"),
         EventEmitter    = require("src/EventEmitter"),
-        Git             = require("src/git/Git"),
+        Git             = require("src/svn/Svn"),
         Preferences     = require("./Preferences"),
         Utils           = require("src/Utils"),
         Strings         = require("strings");

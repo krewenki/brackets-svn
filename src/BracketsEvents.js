@@ -10,7 +10,7 @@ define(function (require) {
     // Local modules
     var Events        = require("src/Events"),
         EventEmitter  = require("src/EventEmitter"),
-        Git           = require("src/git/Git"),
+        Git           = require("src/svn/Svn"),
         HistoryViewer = require("src/HistoryViewer"),
         Utils         = require("src/Utils");
 

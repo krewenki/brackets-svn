@@ -13,7 +13,7 @@ define(function (require) {
         EventEmitter    = require("src/EventEmitter"),
         ExpectedError   = require("src/ExpectedError"),
         ProgressDialog  = require("src/dialogs/Progress"),
-        Git             = require("src/git/Git"),
+        Git             = require("src/svn/Svn"),
         Utils           = require("src/Utils");
 
     // Templates

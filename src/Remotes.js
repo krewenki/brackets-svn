@@ -10,7 +10,7 @@ define(function (require) {
     var ErrorHandler    = require("src/ErrorHandler"),
         Events          = require("src/Events"),
         EventEmitter    = require("src/EventEmitter"),
-        Git             = require("src/git/Git"),
+        Git             = require("src/svn/Svn"),
         Preferences     = require("src/Preferences"),
         ProgressDialog  = require("src/dialogs/Progress"),
         Promise         = require("bluebird"),

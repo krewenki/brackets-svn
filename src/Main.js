@@ -15,7 +15,7 @@ define(function (require, exports) {
         Strings           = require("../strings"),
         Preferences       = require("./Preferences"),
         ErrorHandler      = require("./ErrorHandler"),
-        Git               = require("src/git/Git"),
+        Git               = require("src/svn/Svn"),
         Panel             = require("./Panel"),
         Branch            = require("./Branch"),
         CloseNotModified  = require("./CloseNotModified"),

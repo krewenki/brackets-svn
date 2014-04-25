@@ -11,7 +11,7 @@ define(function (require, exports) {
         SidebarView             = brackets.getModule("project/SidebarView"),
         DocumentManager         = brackets.getModule("document/DocumentManager");
 
-    var Git                     = require("src/git/Git"),
+    var Git                     = require("src/svn/Svn"),
         Events                  = require("src/Events"),
         EventEmitter            = require("src/EventEmitter"),
         ErrorHandler            = require("./ErrorHandler"),
