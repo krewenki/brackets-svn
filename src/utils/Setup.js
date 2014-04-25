@@ -61,6 +61,7 @@ define(function (require, exports) {
 
             pathsToLook.forEach(function (path, index) {
                 Cli.spawnCommand(path, ["--version"]).then(function (stdout) {
+					console.log(path, stdout);
                     var m = stdout.match(/^svn,  version\s+(.*)$/);
                     if (m) {
                         results.push({
