@@ -1,25 +1,25 @@
 {
-    "name": "zaggino.brackets-git",
+    "name": "krewenki.brackets-svn",
 
-    "title": "Brackets Git",
-    "description": "Integration of Git into Brackets",
-    "keywords": ["git", "version-control", "source-control"],
-    "version": "0.13.10",
+    "title": "Brackets SVN",
+    "description": "Integration of SVN into Brackets",
+    "keywords": ["SVN", "version-control", "source-control"],
+    "version": "0.0.1",
 
     "license": "MIT",
-    "homepage": "https://github.com/zaggino/brackets-git",
+    "homepage": "https://github.com/krewenki/brackets-svn",
     "author": {
-        "name": "Martin Zagora",
-        "email": "zaggino@gmail.com",
-        "url": "https://github.com/zaggino"
+        "name": "Warren Krewenki",
+        "email": "krewenki@gmail.com",
+        "url": "https://github.com/krewenki"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/zaggino/brackets-git.git"
+        "url": "https://github.com/krewenki/brackets-svn.git"
     },
     "bugs": {
-        "url": "https://github.com/zaggino/brackets-git/issues",
-        "email": "zaggino@gmail.com"
+        "url": "https://github.com/krewenki/brackets-svn/issues",
+        "email": "krewenki@gmail.com"
     },
 
     "engines": {
