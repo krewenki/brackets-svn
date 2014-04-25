@@ -1,0 +1,96 @@
+// main: brackets-git.less
+.git {
+    hr {
+        margin: 12px auto;
+        width: 95%;
+        height: 1px;
+        border: none;
+        background-color: #d3d3d3;
+    }
+
+    /* radio buttons until they are styled in brackets */
+    input[type="radio"] {
+        margin: 0;
+    }
+    input[type="radio"] {
+        height: 13px;
+        width: 13px;
+        vertical-align: middle;
+        border: 1px solid @tc-gray-component-border;
+        border-radius: 13px;
+        background-color: @tc-button-background;
+        -webkit-appearance: none;
+        box-shadow: @tc-button-highlight;
+    }
+    input[type="radio"]:active:not(:disabled) {
+        background-color: @tc-button-down-background;
+        box-shadow: @tc-button-down-shadow;
+    }
+    input[type="radio"]:focus {
+        outline:none;
+        border: 1px solid @tc-gray-component-focused-border;
+        box-shadow: @tc-input-glow;
+    }
+    input[type="radio"]:checked:before {
+        font-weight: bold;
+        color: @tc-text;
+        content: '\25cf';
+        -webkit-margin-start: 0;
+        position: relative;
+        left: 2px;
+        top: -4px;
+        font-size: 12px;
+    }
+    /* /radio buttons */
+
+    .text-bold {
+        font-weight: 500;
+    }
+    .text-quiet {
+        color: @tc-quiet-text;
+    }
+
+    @small: 5px;
+
+    .padding-right-small {
+        padding-right: @small;
+    }
+}
+
+// Additional icons for GitHub Octicon iconic font
+.octicon {
+    &.octicon-expand, &.octicon-collapse {
+        position: relative;
+        width: 12px;
+        height: 12px;
+        zoom: 1.3;
+        &:before, &:after {
+            position: absolute;
+        }
+        &:before {
+            -webkit-transform: rotate(135deg);
+        }
+        &:after {
+            -webkit-transform: rotate(315deg);
+        }
+    }
+    &.octicon-expand {
+        &:before, &:after {
+            content: "\F071";
+        }
+        &:before {
+            top: -5px;
+            left: 5px;
+        }
+    }
+    &.octicon-collapse {
+        -webkit-transform: translateY(1px);
+        &:before, &:after {
+            content: "\F0A1";
+        }
+        &:before {
+            top: -6px;
+            left: 6px;
+        }
+    }
+}

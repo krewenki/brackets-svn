@@ -1,0 +1,241 @@
+// main: brackets-git.less
+
+.git-history {
+    .history-commit > td {
+        &:nth-child(1) {
+            width: 30px;
+            .commit-author-avatar {
+                width: 18px;
+                height: 18px;
+                margin-left: 15px;
+            }
+        }
+        &:nth-child(2) {
+            width: 250px;
+        }
+        &.commit-title {
+            @padLeft: 15px;
+            padding-left: @padLeft;
+            span {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                position: absolute;
+                left: @padLeft;
+                right: 0;
+            }
+        }
+        position: relative;
+        overflow: hidden;
+    }
+    .commit-author-avatar {
+        @size: 13px;
+        position: absolute;
+        top: 4px;
+        left: 0px;
+        right: 2px;
+        bottom: 2px;
+        width: @size;
+        height: @size;
+        text-align: center;
+        span {
+            font-family: 'SourceCodePro', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            font-size: @size;
+            line-height: @size;
+            padding: 0 5px;
+            color: #FEFEFE;
+            text-transform: uppercase;
+            border-radius: 2px;
+            &.avatar-bw {
+                -webkit-filter: grayscale(100%);
+            }
+        }
+        img {
+            position: absolute;
+            left: 0;
+            top: 1px;
+            height: 16px;
+            width: 16px;
+            border-radius: 2px;
+        }
+    }
+    .commit-author {
+        font-weight: 500;
+    }
+}
+#history-viewer {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    overflow: hidden;
+    background: #dfe2e2;
+    .flex-box(column);
+    > .header {
+        .flex-item(0, 0);
+        .commit-author-avatar {
+            @size: 18px;
+            top: 4px;
+            margin-right: 2px;
+            position: relative;
+            display: inline-block;
+            width: @size;
+            height: @size;
+            .text {
+                font-size: @size;
+                line-height: @size;
+            }
+        }
+        padding: 25px 30px 33px;
+        &.shadow {
+            box-shadow: 0 -1px 3px 2px rgba(0, 0, 0, 0.15);
+            z-index: 1;
+        }
+        .commit-title {
+            font-size: 20px;
+            line-height: 24px;
+            font-weight: 500;
+            margin: 0 0 5px;
+            width: 90%
+        }
+        .close {
+            margin: -5px -3px 0 0;
+        }
+        .commit-hash, .commit-author {
+            margin-right: 10px;
+            display: inline-block;
+            color: #888;
+            i {
+                color: #888;
+                margin-right: 2px;
+            }
+        }
+        .actions {
+            float: right;
+            margin: -10px;
+            >* {
+                margin-right: 10px;
+                display: inline-block;
+            }
+            .dropdown-menu {
+                left: auto;
+                right: 0;
+                line-height: 28px;
+            }
+        }
+
+    }
+    > .body {
+        .flex-item(1, 1);
+        position: relative;
+        overflow-y: scroll;
+        li > a {
+            background: #E6E6E6;
+            border: none;
+            color: #000;
+            margin: 10px;
+            margin-bottom: 0;
+            &:hover:not(.active) {
+                background: #ebebeb;
+            }
+        }
+        .commit-diff {
+            > pre {
+                white-space: pre-line
+            }
+            max-height: 0px;
+            margin: 10px;
+            opacity: 0;
+            transition: all ease 0.3s;
+            transition-property: padding, height, opacity;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-top: 0;
+            margin-top: 0px;
+            border-radius: 0 0 4px 4px;
+            border-color: #ddd;
+            margin-bottom: 0;
+            .separator, .meta-file {
+                display: none;
+            }
+        }
+        .active+.commit-diff {
+            max-height: 99999px;
+            opacity: 1;
+            border-color: @tc-gray-component-border;
+            margin-bottom: 10px;
+            padding: 10px 0;
+        }
+        .opened {
+            display: none;
+            margin-top: 7px;
+        }
+        .closed {
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .active {
+            background: @almostWhite;
+            border: 1px solid @tc-gray-component-border;
+            margin-bottom: 0;
+            border-bottom: 0;
+            border-radius: 4px 4px 0 0;
+            a {
+                border: none;
+                background-color: transparent;
+            }
+            .opened {
+                display: inline-block;
+            }
+            .closed {
+                display: none;
+            }
+        }
+        .caret {
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid #454545;
+        }
+        .caret.caret-right {
+            border-bottom: 4px solid transparent;
+            border-top: 4px solid transparent;
+            border-left: 5px solid #454545;
+        }
+        .commit-files {
+            padding: 0 20px;
+        }
+    }
+    .message {
+        display: block;
+        padding: 10px;
+    }
+
+    .dropdown-menu();
+
+    .toggle-diffs {
+        cursor: pointer;
+        margin-right: -10px;
+        margin-top: 14px;
+        .collapse {
+            display: none;
+        }
+        span.collapse {
+                height: auto;
+        }
+        .expand {
+            vertical-align: middle;
+        }
+        &.opened {
+            .expand {
+                display: none;
+            }
+            .collapse {
+                display: inline-block;
+                vertical-align: middle;
+            }
+        }
+    }
+}
