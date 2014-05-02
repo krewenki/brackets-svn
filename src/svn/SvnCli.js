@@ -422,16 +422,12 @@ define(function (require, exports) {
     }
 
     function stageAll() {
-        return svn(["add", "--all"]);
+        //return svn(["add", "--all"]);
     }
 
-    function commit(message, amend) {
+    function commit(message) {
         var lines = message.split("\n"),
             args = ["commit"];
-
-        if (amend) {
-            args.push("--amend", "--reset-author");
-        }
 
         if (lines.length === 1) {
             args.push("-m", message);

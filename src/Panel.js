@@ -144,9 +144,7 @@ define(function (require, exports) {
                 .attr("title", !bool ? Strings.AMEND_COMMIT_FORBIDDEN : null);
         };
         toggleAmendCheckbox(false);
-        Svn.getCommitsAhead().then(function (commits) {
-            toggleAmendCheckbox(commits.length > 0);
-        });
+
 
         function getCommitMessageElement() {
             var r = $dialog.find("[name='commit-message']:visible");
