@@ -142,7 +142,6 @@ define(function (require, exports, module) {
                     return "<span class='trailingWhitespace'>" + trailingWhitespace + "</span>";
                 });
 				
-				console.log('DiffData is: ', diffData);
                 _.last(diffData).lines.push({
                     "numLineOld": _numLineOld,
                     "numLineNew": _numLineNew,

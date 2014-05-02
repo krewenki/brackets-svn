@@ -104,7 +104,7 @@ define({
     FILE_UNTRACKED:                     "Untracked",
     FOR_MAC_LINUX_USERS:                "For Mac/Linux users",
     FOR_WINDOWS_USERS:                  "For Windows users",
-    GIT_COMMIT:                         "Git commit\u2026",
+    GIT_COMMIT:                         "SVN commit\u2026",
     GIT_CONFIGURATION:                  "Git configuration",
     SVN_DIFF:                           "SVN diff &mdash;",
     GIT_PULL_RESPONSE:                  "Git Pull response",

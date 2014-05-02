@@ -558,7 +558,7 @@ define(function (require, exports) {
         // First reset staged files, then add selected files to the index.
         Svn.status().then(function (files) {
             files = _.filter(files, function (file) {
-                return file.status.indexOf(Svn.FILE_STATUS.STAGED) !== -1;
+                return file.status.indexOf(Svn.FILE_STATUS.MODIFIED) !== -1;
             });
 
             if (files.length === 0) {
@@ -590,7 +590,7 @@ define(function (require, exports) {
                     // stage the files again to include stripWhitespace changes
                     // do not stage deleted files
                     if (!isDeleted) {
-                        return Svn.stage(fileObj.file, updateIndex);
+                       // return Svn.stage(fileObj.file, updateIndex);
                     }
                 });
 
@@ -613,6 +613,7 @@ define(function (require, exports) {
             return Promise.all(promises).then(function () {
                 // All files are in the index now, get the diff and show dialog.
                 return _getStagedDiff().then(function (diff) {
+					console.log('Show Commit Dialog: ', diff, lintResults, prefilledMessage);
                     return _showCommitDialog(diff, lintResults, prefilledMessage);
                 });
             });
@@ -835,7 +836,7 @@ define(function (require, exports) {
                                 method = isChecked ? "stage" : "unstage",
                                 file = $this.attr("x-file"),
                                 status = $this.attr("x-status");
-                            return Git[method](file, status === Svn.FILE_STATUS.DELETED);
+                            return Svn[method](file, status === Svn.FILE_STATUS.DELETED);
                         }).toArray();
                         return Promise.all(promises).then(function () {
                             return Svn.status();
@@ -892,7 +893,7 @@ define(function (require, exports) {
     }
 
     function changeUserName() {
-        return Svn.getConfig("user.name").then(function (currentUserName) {
+       /* return Svn.getConfig("user.name").then(function (currentUserName) {
             return Utils.askQuestion(Strings.CHANGE_USER_NAME, Strings.ENTER_NEW_USER_NAME, {defaultValue: currentUserName})
                 .then(function (userName) {
                     if (!userName.length) { userName = currentUserName; }
@@ -902,11 +903,11 @@ define(function (require, exports) {
                         EventEmitter.emit(Events.GIT_USERNAME_CHANGED, userName);
                     });
                 });
-        });
+        });*/
     }
 
     function changeUserEmail() {
-        return Svn.getConfig("user.email").then(function (currentUserEmail) {
+/*        return Svn.getConfig("user.email").then(function (currentUserEmail) {
             return Utils.askQuestion(Strings.CHANGE_USER_EMAIL, Strings.ENTER_NEW_USER_EMAIL, {defaultValue: currentUserEmail})
                 .then(function (userEmail) {
                     if (!userEmail.length) { userEmail = currentUserEmail; }
@@ -916,7 +917,7 @@ define(function (require, exports) {
                         EventEmitter.emit(Events.GIT_EMAIL_CHANGED, userEmail);
                     });
                 });
-        });
+        }); */
     }
 
     function discardAllChanges() {
@@ -1048,6 +1049,10 @@ define(function (require, exports) {
         // Init moment - use the correct language
         moment.lang(brackets.getLocale());
 
+		if(Svn.isWorkingCopy()){
+			enable();
+		}
+
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {
             toggle(true);
@@ -1100,16 +1105,6 @@ define(function (require, exports) {
     EventEmitter.on(Events.GIT_REMOTE_NOT_AVAILABLE, function () {
         $gitPanel.find(".git-pull").prop("disabled", true);
         $gitPanel.find(".git-push").prop("disabled", true);
-    });
-
-    EventEmitter.on(Events.SVN_ENABLED, function () {
-        // Add info from Git to panel
-        Svn.getConfig("user.name").then(function (currentUserName) {
-            EventEmitter.emit(Events.GIT_USERNAME_CHANGED, currentUserName);
-        });
-        Svn.getConfig("user.email").then(function (currentEmail) {
-            EventEmitter.emit(Events.GIT_EMAIL_CHANGED, currentEmail);
-        });
     });
 
     EventEmitter.on(Events.BRACKETS_CURRENT_DOCUMENT_CHANGE, function () {

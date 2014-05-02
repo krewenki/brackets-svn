@@ -17,7 +17,6 @@ define(function (require, exports) {
         ErrorHandler      = require("./ErrorHandler"),
         Git               = require("src/svn/Svn"),
         Panel             = require("./Panel"),
-        Branch            = require("./Branch"),
         CloseNotModified  = require("./CloseNotModified"),
         Setup             = require("src/utils/Setup"),
         Utils             = require("src/Utils");
@@ -29,7 +28,7 @@ define(function (require, exports) {
     function initUi() {
         // FUTURE: do we really need to launch init from here?
         Panel.init();
-        Branch.init();
+        //Branch.init();
         CloseNotModified.init();
         // Attach events
         $icon.on("click", Panel.toggle);
@@ -193,7 +192,7 @@ define(function (require, exports) {
                 $icon.addClass("error").attr("title", Strings.CHECK_GIT_SETTINGS + " - " + err.toString());
 
                 var expected = new ExpectedError(err);
-                expected.detailsUrl = "https://github.com/zaggino/brackets-git#dependencies";
+                expected.detailsUrl = "https://github.com/krewenki/brackets-svn#dependencies";
                 ErrorHandler.showError(expected, Strings.CHECK_GIT_SETTINGS);
             });
 

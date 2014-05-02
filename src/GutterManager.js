@@ -10,7 +10,7 @@ define(function (require, exports) {
         ErrorHandler    = require("src/ErrorHandler"),
         Events          = require("src/Events"),
         EventEmitter    = require("src/EventEmitter"),
-        Git             = require("src/svn/Svn"),
+        Svn             = require("src/svn/Svn"),
         Preferences     = require("./Preferences"),
         Utils           = require("src/Utils"),
         Strings         = require("strings");
@@ -159,7 +159,7 @@ define(function (require, exports) {
 
         var filename = currentFilePath.substring(currentProjectRoot.length);
 
-        Git.diffFile(filename).then(function (diff) {
+        Svn.diffFile(filename).then(function (diff) {
             var added = [],
                 removed = [],
                 modified = [],

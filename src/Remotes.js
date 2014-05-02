@@ -293,7 +293,7 @@ define(function (require) {
     // Event subscriptions
     EventEmitter.on(Events.SVN_ENABLED, function () {
         initVariables();
-        refreshRemotesPicker();
+        //refreshRemotesPicker();
     });
     EventEmitter.on(Events.HANDLE_REMOTE_PICK, function (event) {
         var $remote     = $(event.target).closest(".remote-name"),

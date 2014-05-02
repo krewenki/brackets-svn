@@ -95,6 +95,12 @@ define(function (require, exports) {
         return rv.promise;
     }
 
+	function isWorkingCopy(){
+		return svn(['status']).then(function(stdout){
+			return !stdout.match('is not a working copy');
+		})
+	}
+
     /*
         svn branch
         -d --delete Delete a branch.
@@ -585,7 +591,7 @@ define(function (require, exports) {
 	}
 
     function getDiffOfStagedFiles() {
-        return svn(["diff", "--no-color", "--staged"]);
+        return svn(["diff", "--git"]);
     }
 
     function getListOfStagedFiles() {
@@ -594,8 +600,8 @@ define(function (require, exports) {
 
     function diffFile(file) {
         return _isFileStaged(file).then(function (staged) {
-            var args = ["diff", "-r BASE"];
-            args.push("-U0", "--", file);
+            var args = ["diff", "--git", "-rBASE"];
+            args.push(file);
             return svn(args);
         });
     }
@@ -734,5 +740,6 @@ define(function (require, exports) {
     exports.getDiffOfStagedFiles      = getDiffOfStagedFiles;
     exports.getListOfStagedFiles      = getListOfStagedFiles;
     exports.getBlame                  = getBlame;
+	exports.isWorkingCopy				= isWorkingCopy;
 
 });
