@@ -585,8 +585,8 @@
 }
 .commit-diff table tbody tr.position,
 .commit-diff table tbody tr.position pre {
-  color: #999999;
-  background-color: #f0f0f7;
+  color: #fff;
+  background-color: #999;
 }
 #git-progress-dialog textarea {
   height: 300px;

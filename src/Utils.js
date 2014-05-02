@@ -46,13 +46,15 @@ define(function (require, exports, module) {
             ADDED: 3
         };
 
+		//console.log('Diff was:  ', diff,  diff.split("\n"))
+		
         diff.split("\n").forEach(function (line) {
             if (line === " ") { line = ""; }
-
+			console.log('Line is: ', line);
             var lineClass   = "",
                 pushLine    = true;
 
-            if (line.match(/index\s[A-z0-9]{7}..[A-z0-9]{7}/)) {
+            if (line.substring(0,5).trim() == 'Index' || line.substring(0,5).trim() == '=====') {
                 if (!verbose) {
                     pushLine = false;
                 }
@@ -139,7 +141,8 @@ define(function (require, exports, module) {
                 line = line.replace(/(&nbsp;)+$/g, function (trailingWhitespace) {
                     return "<span class='trailingWhitespace'>" + trailingWhitespace + "</span>";
                 });
-
+				
+				console.log('DiffData is: ', diffData);
                 _.last(diffData).lines.push({
                     "numLineOld": _numLineOld,
                     "numLineNew": _numLineNew,

@@ -579,7 +579,7 @@ define(function (require, exports) {
 	         return svn(["status", "-u", file]).then(function (stdout) {
 	             if (!stdout) { return false; }
 	             return _.any(stdout.split("\n"), function (line) {
-	                 return line.match("^(\\S)(.)\\s+(" + file + ")$") !== null;
+	                 return line.substring(0,1).trim() == '?';
 	             });
 	         });
 	}
@@ -593,7 +593,6 @@ define(function (require, exports) {
     }
 
     function diffFile(file) {
-		console.log(file);
         return _isFileStaged(file).then(function (staged) {
             var args = ["diff", "-r BASE"];
             args.push("-U0", "--", file);
@@ -603,9 +602,9 @@ define(function (require, exports) {
 
     function diffFileNice(file) {
         return _isFileStaged(file).then(function (staged) {
-            var args = ["diff", "-rBASE"];
-           
+            var args = ["diff", "--git", "-rBASE"]; 
             args.push(file);
+			console.log(svn(args));
             return svn(args);
         });
     }

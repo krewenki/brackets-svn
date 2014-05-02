@@ -106,7 +106,7 @@ define({
     FOR_WINDOWS_USERS:                  "For Windows users",
     GIT_COMMIT:                         "Git commit\u2026",
     GIT_CONFIGURATION:                  "Git configuration",
-    GIT_DIFF:                           "Git diff &mdash;",
+    SVN_DIFF:                           "SVN diff &mdash;",
     GIT_PULL_RESPONSE:                  "Git Pull response",
     GIT_PUSH_RESPONSE:                  "Git Push response",
     GIT_REMOTES:                        "Git remotes",
