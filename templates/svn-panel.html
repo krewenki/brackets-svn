@@ -7,24 +7,6 @@
             <button title="{{S.TOOLTIP_COMMIT}}" class="btn small git-commit" disabled><i class="octicon octicon-git-commit"></i><span>{{S.BUTTON_COMMIT}}</span></button>
         </div>
         <div class="git-available padding-right-small">
-            <div class="btn-group git-rebase">
-                <button title="{{S.TOOLTIP_REBASE_CONTINUE}}" class="btn small git-rebase-continue">
-                    <i class="octicon octicon-git-commit"></i><span>{{S.BUTTON_REBASE_CONTINUE}}</span>
-                </button>
-                <button title="{{S.TOOLTIP_REBASE_SKIP}}" class="btn small git-rebase-skip">
-                    <span>{{S.BUTTON_REBASE_SKIP}}</span>
-                </button>
-                <button title="{{S.TOOLTIP_REBASE_ABORT}}" class="btn small git-rebase-abort">
-                    <span>{{S.BUTTON_REBASE_ABORT}}</span>
-                </button>
-                <!--
-                <button title="{{S.TOOLTIP_FIND_CONFLICTS}}" class="btn small git-find-conflicts">
-                    <span>{{S.BUTTON_FIND_CONFLICTS}}</span>
-                </button>
-                -->
-            </div>
-        </div>
-        <div class="git-available padding-right-small">
             <div class="btn-group git-merge">
                 <button title="{{S.TOOLTIP_COMMIT}}" class="btn small git-commit-merge">
                     <i class="octicon octicon-git-commit"></i><span>{{S.BUTTON_COMMIT}}</span>
@@ -32,11 +14,6 @@
                 <button title="{{S.TOOLTIP_MERGE_ABORT}}" class="btn small git-merge-abort">
                     <span>{{S.BUTTON_MERGE_ABORT}}</span>
                 </button>
-                <!--
-                <button title="{{S.TOOLTIP_FIND_CONFLICTS}}" class="btn small git-find-conflicts">
-                    <span>{{S.BUTTON_FIND_CONFLICTS}}</span>
-                </button>
-                -->
             </div>
         </div>
         <div class="btn-group git-available">
@@ -76,11 +53,6 @@
         <!-- on right -->
         <div class="git-right-icons">
             <div class="btn-group git-available dropup">
-                <button type="button" class="git-remotes btn small dropdown-toggle" data-toggle="dropdown" title="{{S.TOOLTIP_PICK_REMOTE}}">
-                    <span class="caret"></span>
-                    <span class="git-selected-remote">&mdash;</span>
-                </button>
-                <ul class="dropdown-menu git-remotes-dropdown"></ul>
                 <button title="{{S.TOOLTIP_PULL}}" class="btn small git-pull"><i class="octicon octicon-repo-pull"></i></button>
                 <button title="{{S.TOOLTIP_PUSH}}" class="btn small git-push"><i class="octicon octicon-repo-push"></i></button>
             </div>

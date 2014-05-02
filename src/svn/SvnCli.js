@@ -379,14 +379,14 @@ define(function (require, exports) {
                 var data = line.split('|'),
                     commit = {};
 
-                commit.hashShort  = data[0].replace('r').trim();
-                commit.hash       = data[0].replace('r').trim();
+                commit.hashShort  = data[0].replace('r','').trim();
+                commit.hash       = data[0].replace('r','').trim();
                 commit.author     = data[1].trim();
                 commit.date       = data[2].trim();
                 commit.email      = commit.author+'@project.com';
                 commit.subject    = data[3].split("\n")[2].trim();
                 commit.body       = data[3].split("\n")[2].trim();
-
+				console.log(commit);
                 return commit;
 
             });
