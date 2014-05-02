@@ -122,8 +122,8 @@ define(function (require) {
                     .data("file", file ? file.absolute : null)
                     .data("file-relative", file ? file.relative : null);
             }).catch(function (err) {
-            ErrorHandler.showError(err, "Failed to get history");
-        });
+            	ErrorHandler.showError(err, "Failed to get history");
+        	});
     }
 
     // Load more rows in the history list on scroll

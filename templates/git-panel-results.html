@@ -2,7 +2,7 @@
     <tbody>
         {{#files}}
         <tr class="modified-file" x-file="{{file}}" x-status="{{status}}">
-            <td class="checkbox-column"><input type="checkbox" class="check-one" {{#staged}}checked="true"{{/staged}} /></td>
+            <td class="checkbox-column"><input type="checkbox" class="check-one" /></td>
             <td class="icons-column">
                 {{#allowDiff}}<button class="btn btn-mini btn-git-diff" title="{{Strings.DIFF}}"><i class="octicon octicon-diff"></i></button>{{/allowDiff}}
             </td>

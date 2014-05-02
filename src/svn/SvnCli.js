@@ -378,14 +378,14 @@ define(function (require, exports) {
 			return !stdout ? [] : stdout.map(function (line) {
                 var data = line.split('|'),
                     commit = {};
-				console.log(data);
-                commit.hashShort  = '';
-                commit.hash       = '';
+
+                commit.hashShort  = data[0].replace('r').trim();
+                commit.hash       = data[0].replace('r').trim();
                 commit.author     = data[1].trim();
                 commit.date       = data[2].trim();
                 commit.email      = commit.author+'@project.com';
-                commit.subject    = '';
-                commit.body       = data[3].trim();
+                commit.subject    = data[3].split("\n")[2].trim();
+                commit.body       = data[3].split("\n")[2].trim();
 
                 return commit;
 

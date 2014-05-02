@@ -35,7 +35,7 @@ define(function (require, exports) {
         SettingsDialog     = require("./SettingsDialog"),
         PANEL_COMMAND_ID   = "brackets-git.panel";
 
-    var gitPanelTemplate            = require("text!templates/git-panel.html"),
+    var svnPanelTemplate            = require("text!templates/svn-panel.html"),
         gitPanelResultsTemplate     = require("text!templates/git-panel-results.html"),
         gitAuthorsDialogTemplate    = require("text!templates/authors-dialog.html"),
         gitCommitDialogTemplate     = require("text!templates/git-commit-dialog.html"),
@@ -912,7 +912,7 @@ define(function (require, exports) {
 
     function init() {
         // Add panel
-        var panelHtml = Mustache.render(gitPanelTemplate, {
+        var panelHtml = Mustache.render(svnPanelTemplate, {
             enableAdvancedFeatures: Preferences.get("enableAdvancedFeatures"),
             showBashButton: Preferences.get("showBashButton"),
             showReportBugButton: Preferences.get("showReportBugButton"),
