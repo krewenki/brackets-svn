@@ -136,15 +136,6 @@ define(function (require, exports) {
         // Show nicely colored commit diff
         $dialog.find(".commit-diff").append(Utils.formatDiff(stagedDiff));
 
-        // Enable / Disable amend checkbox
-        var toggleAmendCheckbox = function (bool) {
-            $dialog.find(".amend-commit")
-                .prop("disabled", !bool)
-                .parent()
-                .attr("title", !bool ? Strings.AMEND_COMMIT_FORBIDDEN : null);
-        };
-        toggleAmendCheckbox(false);
-
 
         function getCommitMessageElement() {
             var r = $dialog.find("[name='commit-message']:visible");
@@ -216,17 +207,6 @@ define(function (require, exports) {
             recalculateMessageLength();
         }
 
-        // Assign action to amend checkbox
-        $dialog.find(".amend-commit").on("click", function () {
-            if ($(this).prop("checked") === false) {
-                prefillMessage("");
-            } else {
-                Svn.getLastCommitMessage().then(function (msg) {
-                    prefillMessage(msg);
-                });
-            }
-        });
-
         if (Preferences.get("useTextAreaForCommitByDefault")) {
             switchCommitMessageElement();
         }
@@ -246,8 +226,7 @@ define(function (require, exports) {
         dialog.done(function (buttonId) {
             if (buttonId === "ok") {
                 // this event won't launch when commit-message is empty so its safe to assume that it is not
-                var commitMessage = getCommitMessageElement().val(),
-                    amendCommit = $dialog.find(".amend-commit").prop("checked");
+                var commitMessage = getCommitMessageElement().val();
 
                 // if commit message is extended and has a newline, put an empty line after first line to separate subject and body
                 var s = commitMessage.split("\n");
@@ -259,7 +238,7 @@ define(function (require, exports) {
                 // now we are going to be paranoid and we will check if some mofo didn't change our diff
                 _getStagedDiff().then(function (diff) {
                     if (diff === stagedDiff) {
-                        return Svn.commit(commitMessage, amendCommit);
+                        return Svn.commit(commitMessage);
                     } else {
                         throw new Error("Index was changed while commit dialog was shown!");
                     }

@@ -364,41 +364,28 @@ define(function (require, exports) {
         return svn(["config", key.replace(/\s/g, ""), value]);
     }
 
-    function getHistory(branch, skipCommits, file) {
-        var separator = "_._",
-            newline   = "_.nw._",
-            format = [
-                "%h",  // abbreviated commit hash
-                "%H",  // commit hash
-                "%an", // author name
-                "%ai", // author date, ISO 8601 format
-                "%ae", // author email
-                "%s",  // subject
-                "%b"   // body
-            ].join(separator) + newline;
+    function getHistory(skipCommits, file) {
+		var revSeparator = '------------------------------------------------------------------------';
 
-        var args = ["log", "-100"];
-        if (skipCommits) { args.push("--skip=" + skipCommits); }
-        args.push("--format=" + format);
-        args.push(branch);
-        // follow is too buggy - do not use
-        // if (file) { args.push("--follow"); }
+        var args = ["log", "-l100"];
+        //if (skipCommits) { args.push("--skip=" + skipCommits); }
         if (file) { args.push(file); }
 
         return svn(args).then(function (stdout) {
-            stdout = stdout.substring(0, stdout.length - newline.length);
-            return !stdout ? [] : stdout.split(newline).map(function (line) {
-
-                var data = line.split(separator),
+            stdout = stdout.split(revSeparator);
+			stdout.pop();
+			stdout.shift();
+			return !stdout ? [] : stdout.map(function (line) {
+                var data = line.split('|'),
                     commit = {};
-
-                commit.hashShort  = data[0];
-                commit.hash       = data[1];
-                commit.author     = data[2];
-                commit.date       = data[3];
-                commit.email      = data[4];
-                commit.subject    = data[5];
-                commit.body       = data[6];
+				console.log(data);
+                commit.hashShort  = '';
+                commit.hash       = '';
+                commit.author     = data[1].trim();
+                commit.date       = data[2].trim();
+                commit.email      = commit.author+'@project.com';
+                commit.subject    = '';
+                commit.body       = data[3].trim();
 
                 return commit;
 

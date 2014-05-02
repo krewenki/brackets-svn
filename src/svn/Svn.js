@@ -1,19 +1,19 @@
 /*
-    This file acts as an entry point to GitCli.js and other possible
+    This file acts as an entry point to SvnCli.js and other possible
     implementations of Git communication besides Cli. Application
-    should not access GitCli directly.
+    should not access SvnCli directly.
 */
 define(function (require, exports) {
 
     // Local modules
     var Promise = require("bluebird"),
         Cli     = require("src/Cli"),
-        GitCli  = require("src/svn/SvnCli"),
+        SvnCli  = require("src/svn/SvnCli"),
         Utils   = require("src/Utils");
 
     // Implementation
     function pushToNewUpstream(remoteName, remoteBranch) {
-        return GitCli.push(remoteName, remoteBranch, ["--set-upstream"]);
+        return SvnCli.push(remoteName, remoteBranch, ["--set-upstream"]);
     }
 
     function sortBranches(branches) {
@@ -50,32 +50,32 @@ define(function (require, exports) {
     }
 
     function getBranches() {
-        return GitCli.getBranches().then(function (branches) {
+        return SvnCli.getBranches().then(function (branches) {
             return sortBranches(branches);
         });
     }
 
     function getAllBranches() {
-        return GitCli.getAllBranches().then(function (branches) {
+        return SvnCli.getAllBranches().then(function (branches) {
             return sortBranches(branches);
         });
     }
 
-    function getHistory(branch, skip) {
-        return GitCli.getHistory(branch, skip);
+    function getHistory(skip) {
+        return SvnCli.getHistory(skip);
     }
 
-    function getFileHistory(file, branch, skip) {
-        return GitCli.getHistory(branch, skip, file);
+    function getFileHistory(file, skip) {
+        return SvnCli.getHistory(skip, file);
     }
 
     function resetIndex() {
-        return GitCli.reset();
+        return SvnCli.reset();
     }
 
     function discardAllChanges() {
-        return GitCli.reset("--hard").then(function () {
-            return GitCli.clean();
+        return SvnCli.reset("--hard").then(function () {
+            return SvnCli.clean();
         });
     }
 
@@ -136,21 +136,21 @@ define(function (require, exports) {
     }
 
     function discardFileChanges(file) {
-        return GitCli.unstage(file).then(function () {
-            return GitCli.checkout(file);
+        return SvnCli.unstage(file).then(function () {
+            return SvnCli.checkout(file);
         });
     }
 
     function pushForced(remote, branch) {
-        return GitCli.push(remote, branch, ["--force"]);
+        return SvnCli.push(remote, branch, ["--force"]);
     }
 
     function deleteRemoteBranch(remote, branch) {
-        return GitCli.push(remote, branch, ["--delete"]);
+        return SvnCli.push(remote, branch, ["--delete"]);
     }
 
     function undoLastLocalCommit() {
-        return GitCli.reset("--soft", "HEAD~1");
+        return SvnCli.reset("--soft", "HEAD~1");
     }
 
     // Public API
@@ -168,9 +168,9 @@ define(function (require, exports) {
     exports.deleteRemoteBranch      = deleteRemoteBranch;
     exports.undoLastLocalCommit     = undoLastLocalCommit;
 
-    Object.keys(GitCli).forEach(function (method) {
+    Object.keys(SvnCli).forEach(function (method) {
         if (!exports[method]) {
-            exports[method] = GitCli[method];
+            exports[method] = SvnCli[method];
         }
     });
 });

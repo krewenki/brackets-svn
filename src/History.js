@@ -11,7 +11,7 @@ define(function (require) {
         ErrorHandler = require("src/ErrorHandler"),
         Events = require("src/Events"),
         EventEmitter = require("src/EventEmitter"),
-        Git = require("src/svn/Svn"),
+        Svn = require("src/svn/Svn"),
         HistoryViewer = require("src/HistoryViewer"),
         Preferences = require("src/Preferences");
 
@@ -97,9 +97,8 @@ define(function (require) {
         // clear cache
         commitCache = [];
 
-        return Git.getCurrentBranchName().then(function (branchName) {
-            // Get the history commits of the current branch
-            var p = file ? Git.getFileHistory(file.relative, branchName) : Git.getHistory(branchName);
+ 
+            var p = file ? Svn.getFileHistory(file.relative) : Svn.getHistory();
             return p.then(function (commits) {
 
                 // calculate some missing stuff like avatars
@@ -122,8 +121,7 @@ define(function (require) {
                 $historyList = $tableContainer.find("#git-history-list")
                     .data("file", file ? file.absolute : null)
                     .data("file-relative", file ? file.relative : null);
-            });
-        }).catch(function (err) {
+            }).catch(function (err) {
             ErrorHandler.showError(err, "Failed to get history");
         });
     }
@@ -135,14 +133,14 @@ define(function (require) {
                 if ($historyList.attr("x-finished") === "true") {
                     return;
                 }
-                return Git.getCurrentBranchName().then(function (branchName) {
+                return Svn.getCurrentBranchName().then(function (branchName) {
                     var p,
                         file = $historyList.data("file-relative"),
                         skipCount = $tableContainer.find("tr.history-commit").length;
                     if (file) {
-                        p = Git.getFileHistory(file, branchName, skipCount);
+                        p = Svn.getFileHistory(file, branchName, skipCount);
                     } else {
-                        p = Git.getHistory(branchName, skipCount);
+                        p = Svn.getHistory(branchName, skipCount);
                     }
                     return p.then(function (commits) {
                         if (commits.length === 0) {
