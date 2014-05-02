@@ -364,7 +364,7 @@ define(function (require, exports) {
             _makeDialogBig($dialog);
             $dialog.find(".commit-diff").append(Utils.formatDiff(diff));
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Git Diff failed");
+            ErrorHandler.showError(err, "SVN Diff failed");
         });
     }
 

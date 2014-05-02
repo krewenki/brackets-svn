@@ -906,7 +906,7 @@
 }
 /* Toolbar icon */
 #git-toolbar-icon {
-  background: url("git-icon.svg") no-repeat 0 0;
+  background: url("svn-icon.svg") no-repeat 0 0;
 }
 #git-toolbar-icon.on {
   background-position: 0 -24px;

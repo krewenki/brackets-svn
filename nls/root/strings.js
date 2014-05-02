@@ -96,6 +96,7 @@ define({
     FILE_DELETED:                       "Deleted",
     FILE_IGNORED:                       "Ignored",
     FILE_MODIFIED:                      "Modified",
+	FILE_OUTOFDATE: 					"Out of date", 
     FILE_RENAMED:                       "Renamed",
     FILE_STAGED:                        "Staged",
     FILE_UNMERGED:                      "Unmerged",

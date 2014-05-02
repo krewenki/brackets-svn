@@ -27,16 +27,17 @@ define(function (require, exports) {
         _svnQueueBusy = false;
 
     var FILE_STATUS = {
-        STAGED: "STAGED",
-        UNMODIFIED: "UNMODIFIED",
-        IGNORED: "IGNORED",
-        UNTRACKED: "UNTRACKED",
-        MODIFIED: "MODIFIED",
-        ADDED: "ADDED",
-        DELETED: "DELETED",
-        RENAMED: "RENAMED",
-        COPIED: "COPIED",
-        UNMERGED: "UNMERGED"
+        STAGED		: "STAGED",
+		OUTOFDATE	: "OUTOFDATE",
+        UNMODIFIED	: "UNMODIFIED",
+        IGNORED		: "IGNORED",
+        UNTRACKED	: "UNTRACKED",
+        MODIFIED	: "MODIFIED",
+        ADDED		: "ADDED",
+        DELETED		: "DELETED",
+        RENAMED		: "RENAMED",
+        COPIED		: "COPIED",
+        UNMERGED	: "UNMERGED"
     };
 
     // Implementation
@@ -492,23 +493,13 @@ define(function (require, exports) {
                 var statusStaged = line.substring(0, 1),
                     statusUnstaged = line.substring(1, 2),
                     status = [],
-                    file = _unquote(line.substring(3));
+                    file = _unquote(line.substring(10).match(/ [a-zA-Z/ _.]*/gm).pop().trim());
 
-                if (statusStaged !== " " && statusUnstaged !== " " &&
-                    statusStaged !== "?" && statusUnstaged !== "?") {
-                    needReset.push(file);
-					console.log(file, statusStaged);
-                    return;
-                }
-
-                var statusChar;
-                if (statusStaged !== " " && statusStaged !== "?") {
-                    status.push(FILE_STATUS.STAGED);
-                    statusChar = statusStaged;
-                } else {
-                    statusChar = statusUnstaged;
-                }
-
+                var statusChar = line.substring(0,1);
+				var outOfDate  = line.substring(9,1);
+				if(outOfDate.trim() == '*'){
+					status.push(FILE_STATUS.OUTOFDATE);
+				}
                 switch (statusChar) {
                     case " ":
                         status.push(FILE_STATUS.UNMODIFIED);
@@ -584,7 +575,14 @@ define(function (require, exports) {
         });
     }
 
-
+	 function _isFileStaged(file) {
+	         return svn(["status", "-u", file]).then(function (stdout) {
+	             if (!stdout) { return false; }
+	             return _.any(stdout.split("\n"), function (line) {
+	                 return line.match("^(\\S)(.)\\s+(" + file + ")$") !== null;
+	             });
+	         });
+	}
 
     function getDiffOfStagedFiles() {
         return svn(["diff", "--no-color", "--staged"]);
@@ -595,9 +593,9 @@ define(function (require, exports) {
     }
 
     function diffFile(file) {
+		console.log(file);
         return _isFileStaged(file).then(function (staged) {
-            var args = ["diff", "--no-color"];
-            if (staged) { args.push("--staged"); }
+            var args = ["diff", "-r BASE"];
             args.push("-U0", "--", file);
             return svn(args);
         });
@@ -605,8 +603,8 @@ define(function (require, exports) {
 
     function diffFileNice(file) {
         return _isFileStaged(file).then(function (staged) {
-            var args = ["diff", "--no-color"];
-            if (staged) { args.push("--staged"); }
+            var args = ["diff", "-rBASE"];
+           
             args.push(file);
             return svn(args);
         });
