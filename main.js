@@ -27,7 +27,6 @@ define(function (require, exports, module) {
         "src/BracketsEvents",
         "src/GutterManager",
         "src/History",
-        "src/NoRepo",
         "src/Remotes",
         "src/utils/Terminal"
     ];

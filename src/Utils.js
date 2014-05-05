@@ -46,11 +46,8 @@ define(function (require, exports, module) {
             ADDED: 3
         };
 
-		//console.log('Diff was:  ', diff,  diff.split("\n"))
-		
         diff.split("\n").forEach(function (line) {
             if (line === " ") { line = ""; }
-			console.log('Line is: ', line);
             var lineClass   = "",
                 pushLine    = true;
 
