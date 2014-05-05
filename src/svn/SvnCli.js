@@ -412,6 +412,14 @@ define(function (require, exports) {
         //return svn(["add", "--all"]);
     }
 
+	function updateRepo() {
+		return svn(["update"]);
+	}
+	
+	function updateFile(file){
+		return svn(["update",file]);
+	}
+
     function commit(message) {
         var lines = message.split("\n"),
             args = ["commit"];
@@ -725,5 +733,7 @@ define(function (require, exports) {
     exports.getListOfStagedFiles      = getListOfStagedFiles;
     exports.getBlame                  = getBlame;
 	exports.isWorkingCopy				= isWorkingCopy;
+	exports.updateRepo					= updateRepo;
+	exports.updateFile					= updateFile;
 
 });

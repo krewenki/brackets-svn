@@ -68,6 +68,14 @@ define(function (require, exports) {
     function getFileHistory(file, skip) {
         return SvnCli.getHistory(skip, file);
     }
+	
+	function updateRepo(){
+		return SvnCli.updateRepo();
+	}
+
+	function updateFile(file){
+		return SvnCli.updateFile(file);
+	}
 
     function resetIndex() {
         return SvnCli.reset();
@@ -167,6 +175,8 @@ define(function (require, exports) {
     exports.pushForced              = pushForced;
     exports.deleteRemoteBranch      = deleteRemoteBranch;
     exports.undoLastLocalCommit     = undoLastLocalCommit;
+	exports.updateRepo				= updateRepo;
+	exports.updateFile				= updateFile;
 
     Object.keys(SvnCli).forEach(function (method) {
         if (!exports[method]) {

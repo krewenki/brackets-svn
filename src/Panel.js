@@ -394,7 +394,9 @@ define(function (require, exports) {
     }
 	
 	function handleSvnUpdate(file){
-		return;
+		return Svn.updateFile(file).then(function(stdout){
+			refresh();
+		});
 	}
 
     /**
