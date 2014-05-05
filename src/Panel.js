@@ -392,6 +392,10 @@ define(function (require, exports) {
             }
         });
     }
+	
+	function handleSvnUpdate(file){
+		return;
+	}
 
     /**
      *  strips trailing whitespace from all the diffs and adds \n to the end
@@ -658,7 +662,8 @@ define(function (require, exports) {
                                  file.status.indexOf(Svn.FILE_STATUS.RENAMED) === -1 &&
                                  file.status.indexOf(Svn.FILE_STATUS.DELETED) === -1;
                 file.allowDelete = file.status.indexOf(Svn.FILE_STATUS.UNTRACKED) !== -1;
-                file.allowUndo = !file.allowDelete;
+                file.allowUndo = !file.allowDelete && file.status.indexOf(Svn.FILE_STATUS.MODIFIED) !== -1;
+				file.allowUpdate = file.status.indexOf(Svn.FILE_STATUS.OUTOFDATE) !== -1;
             });
             $tableContainer.append(Mustache.render(gitPanelResultsTemplate, {
                 files: files,
@@ -850,6 +855,10 @@ define(function (require, exports) {
                 e.stopPropagation();
                 handleGitDelete($(e.target).closest("tr").attr("x-file"));
             })
+			.on("click", ".btn-svn-update", function (e) {
+				e.stopPropagation();
+				handleSvnUpdate($(e.target).closest("tr").attr("x-file"));
+			})
             .on("click", ".modified-file", function (e) {
                 var $this = $(e.currentTarget);
                 if ($this.attr("x-status") === Svn.FILE_STATUS.DELETED) {

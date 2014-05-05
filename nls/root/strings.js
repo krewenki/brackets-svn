@@ -197,6 +197,7 @@ define({
     TOOLTIP_SHOW_HISTORY:               "Show history",
     UNDO_CHANGES:                       "Discard changes",
     UNDO_LAST_LOCAL_COMMIT:             "Undo last local (not pushed) commit",
+	UPDATE_FILE:   						"Update", 
     URL:                                "URL",
     USERNAME:                           "Username",
     USER_ABORTED:                       "User aborted!",
