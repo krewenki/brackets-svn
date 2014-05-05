@@ -48,7 +48,7 @@ define(function (require) {
         args = customArgs.split(" ").map(function (arg) {
             return arg.replace("$1", Cli.escapeShellArg(normalizeUncUrls(folder)));
         });
-
+		console.log(cmd, args, opts);
         return Cli.executeCommand(cmd, args, opts).catch(function (err) {
             if (ErrorHandler.isTimeout(err)) {
                 // process is running after 1 second timeout so terminal is opened
