@@ -485,13 +485,14 @@ define(function (require, exports) {
                     file = _unquote(line.substring(10).match(/ [a-zA-Z/ _.]*/gm).pop().trim());
 
                 var statusChar = line.substring(0,1);
-				var outOfDate  = line.substring(9,1);
-				if(outOfDate.trim() == '*'){
+				var outOfDate  = line.substring(9,1).trim() == '*';
+				if(outOfDate){
 					status.push(FILE_STATUS.OUTOFDATE);
 				}
                 switch (statusChar) {
                     case " ":
-                        status.push(FILE_STATUS.UNMODIFIED);
+						if(!outOfDate)
+                        	status.push(FILE_STATUS.UNMODIFIED);
                         break;
                     case "!":
                         status.push(FILE_STATUS.IGNORED);
@@ -583,7 +584,7 @@ define(function (require, exports) {
 
     function diffFile(file) {
         return _isFileStaged(file).then(function (staged) {
-            var args = ["diff", "--git", "-rBASE"];
+            var args = ["diff", "--git", "-rHEAD"];
             args.push(file);
             return svn(args);
         });
@@ -591,9 +592,9 @@ define(function (require, exports) {
 
     function diffFileNice(file) {
         return _isFileStaged(file).then(function (staged) {
-            var args = ["diff", "--git", "-rBASE"]; 
+            var args = ["diff", "--git", "-rHEAD"]; 
             args.push(file);
-			console.log(svn(args));
+			
             return svn(args);
         });
     }
