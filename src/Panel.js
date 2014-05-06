@@ -596,7 +596,6 @@ define(function (require, exports) {
             return Promise.all(promises).then(function () {
                 // All files are in the index now, get the diff and show dialog.
                 return _getStagedDiff().then(function (diff) {
-					console.log('Show Commit Dialog: ', diff, lintResults, prefilledMessage);
                     return _showCommitDialog(diff, lintResults, prefilledMessage);
                 });
             });

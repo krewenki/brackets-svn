@@ -573,7 +573,7 @@ define(function (require, exports) {
         });
     }
 
-	 function _isFileStaged(file) {
+	 function _isFileTracked(file) {
 	         return svn(["status", "-u", file]).then(function (stdout) {
 	             if (!stdout) { return false; }
 				 return stdout.split("\n")[0].substring(0,1).trim() != '?';
@@ -589,7 +589,7 @@ define(function (require, exports) {
     }
 
     function diffFile(file) {
-        return _isFileStaged(file).then(function (staged) {
+        return _isFileTracked(file).then(function (staged) {
 			if(!staged) return '';
             var args = ["diff", "--git", "-rHEAD"];
             args.push(file);
@@ -598,7 +598,7 @@ define(function (require, exports) {
     }
 
     function diffFileNice(file) {
-        return _isFileStaged(file).then(function (staged) {
+        return _isFileTracked(file).then(function (staged) {
 			if(!staged) return '';
             var args = ["diff", "--git", "-rHEAD"]; 
             args.push(file);
