@@ -172,6 +172,7 @@ define({
     TITLE_CHECKOUT:                     "Do you really wish to checkout this commmit?",
     TITLE_RESET:                        "Do you really wish to reset?",
     TOOLTIP_BUG:                        "Report bug",
+	TOOLTIP_BLAME:                      "Show blame",
     TOOLTIP_CHECKOUT_COMMIT:            "Checkout a specific commit",
     TOOLTIP_CLONE:                      "Clone existing repository",
     TOOLTIP_CLOSE_NOT_MODIFIED:         "Close files not modified in Git",

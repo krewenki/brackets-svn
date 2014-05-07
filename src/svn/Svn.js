@@ -144,9 +144,7 @@ define(function (require, exports) {
     }
 
     function discardFileChanges(file) {
-        return SvnCli.unstage(file).then(function () {
-            return SvnCli.checkout(file);
-        });
+        return SvnCli.revert(file);
     }
 
     function pushForced(remote, branch) {

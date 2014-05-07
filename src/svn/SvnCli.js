@@ -606,6 +606,10 @@ define(function (require, exports) {
             return svn(args);
         });
     }
+	
+	function revert(file){
+		return svn(["revert", file]);
+	}
 
     function clean() {
         return svn(["clean", "-f", "-d"]);
@@ -735,5 +739,6 @@ define(function (require, exports) {
 	exports.isWorkingCopy				= isWorkingCopy;
 	exports.updateRepo					= updateRepo;
 	exports.updateFile					= updateFile;
+	exports.revert						= revert;
 
 });
