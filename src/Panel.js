@@ -393,8 +393,14 @@ define(function (require, exports) {
         });
     }
 	
-	function handleSvnUpdate(file){
-		return Svn.updateFile(file).then(function(stdout){
+	function handleGlobalUpdate(){
+		var files = [];
+		return handleSvnUpdate(files);
+	}
+	
+	function handleSvnUpdate(files){
+		if(!_.isArray(files)) return;
+		return Svn.updateFile(files).then(function(stdout){
 			refresh();
 		});
 	}
@@ -801,37 +807,12 @@ define(function (require, exports) {
                     isChecked = $(this).is(":checked");
 
                 if (e.shiftKey) {
-                    // stage/unstage all file between
-                    var lc = lastCheckOneClicked.localeCompare(file),
-                        lcClickedSelector = "[x-file='" + lastCheckOneClicked + "']",
-                        sequence;
-
-                    if (lc < 0) {
-                        sequence = $tr.prevUntil(lcClickedSelector).andSelf();
-                    } else if (lc > 0) {
-                        sequence = $tr.nextUntil(lcClickedSelector).andSelf();
-                    }
-
-                    if (sequence) {
-                        sequence = sequence.add($tr.parent().children(lcClickedSelector));
-                        var promises = sequence.map(function () {
-                            var $this = $(this),
-                                method = isChecked ? "stage" : "unstage",
-                                file = $this.attr("x-file"),
-                                status = $this.attr("x-status");
-                            return Svn[method](file, status === Svn.FILE_STATUS.DELETED);
-                        }).toArray();
-                        return Promise.all(promises).then(function () {
-                            return Svn.status();
-                        }).catch(function (err) {
-                            ErrorHandler.showError(err, "Modifying file status failed");
-                        });
-                    }
+                    // do something if we press shift. Right now? Nothing.
                 }
 
                 lastCheckOneClicked = file;
 
-                if (isChecked) {
+               /* if (isChecked) {
                     Svn.stage(file, status === Svn.FILE_STATUS.DELETED).then(function () {
                         Svn.status();
                     });
@@ -839,7 +820,7 @@ define(function (require, exports) {
                     Svn.unstage(file).then(function () {
                         Svn.status();
                     });
-                }
+                } */
             })
             .on("dblclick", ".check-one", function (e) {
                 e.stopPropagation();
@@ -858,7 +839,7 @@ define(function (require, exports) {
             })
 			.on("click", ".btn-svn-update", function (e) {
 				e.stopPropagation();
-				handleSvnUpdate($(e.target).closest("tr").attr("x-file"));
+				handleSvnUpdate([$(e.target).closest("tr").attr("x-file")]);
 			})
             .on("click", ".modified-file", function (e) {
                 var $this = $(e.currentTarget);
@@ -937,23 +918,13 @@ define(function (require, exports) {
         $gitPanel
             .on("click", ".close", toggle)
             .on("click", ".check-all", function () {
-                if ($(this).is(":checked")) {
-                    return Svn.stageAll().then(function () {
-                        Svn.status();
-                    });
-                } else {
-                    return Svn.resetIndex().then(function () {
-                        Svn.status();
-                    });
-                }
+				$('.check-one').attr('checked',true);
+				
             })
             .on("click", ".git-refresh", EventEmitter.emitFactory(Events.REFRESH_ALL))
             .on("click", ".git-commit", EventEmitter.emitFactory(Events.HANDLE_GIT_COMMIT))
-            .on("click", ".git-rebase-continue", function (e) { handleRebase("continue", e); })
-            .on("click", ".git-rebase-skip", function (e) { handleRebase("skip", e); })
-            .on("click", ".git-rebase-abort", function (e) { handleRebase("abort", e); })
             .on("click", ".git-commit-merge", commitMerge)
-            .on("click", ".git-merge-abort", abortMerge)
+			.on("click", ".svn-update", handleGlobalUpdate)
             .on("click", ".git-find-conflicts", findConflicts)
             .on("click", ".git-prev-gutter", GutterManager.goToPrev)
             .on("click", ".git-next-gutter", GutterManager.goToNext)
@@ -962,14 +933,7 @@ define(function (require, exports) {
             .on("click", ".authors-file", handleAuthorsFile)
             .on("click", ".git-file-history", EventEmitter.emitFactory(Events.HISTORY_SHOW, "FILE"))
             .on("click", ".git-history-toggle", EventEmitter.emitFactory(Events.HISTORY_SHOW, "GLOBAL"))
-            .on("click", ".git-push", EventEmitter.emitFactory(Events.HANDLE_PUSH))
-            .on("click", ".git-pull", EventEmitter.emitFactory(Events.HANDLE_PULL))
             .on("click", ".git-bug", ErrorHandler.reportBug)
-            .on("click", ".git-init", EventEmitter.emitFactory(Events.HANDLE_GIT_INIT))
-            .on("click", ".git-clone", EventEmitter.emitFactory(Events.HANDLE_GIT_CLONE))
-            .on("click", ".change-remote", EventEmitter.emitFactory(Events.HANDLE_REMOTE_PICK))
-            .on("click", ".remove-remote", EventEmitter.emitFactory(Events.HANDLE_REMOTE_DELETE))
-            .on("click", ".git-remote-new", EventEmitter.emitFactory(Events.HANDLE_REMOTE_CREATE))
             .on("click", ".git-settings", SettingsDialog.show)
             .on("contextmenu", "tr", function (e) {
                 var $this = $(this);
