@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.3
+
+* Cleaned up main SVN panel
+* Added Update button
+* Removed errors when editing non-tracked files
+
 ## 0.0.2
 Everything is really crude right now while it's still being converted, but this is nearly usable for day to day tasks.
 
