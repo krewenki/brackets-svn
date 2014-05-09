@@ -476,8 +476,11 @@ define(function (require, exports) {
         return str;
     }
 
-    function status(type) {
-        return svn(["status", "-u"]).then(function (stdout) {
+    function status(remote) {
+		var type = '';
+		var args = ['status'];
+		if(remote) { args.push('-u'); }
+        return svn(args).then(function (stdout) {
             if (!stdout) { return []; }
 
             // files that are modified both in index and working tree should be resetted
@@ -574,7 +577,7 @@ define(function (require, exports) {
     }
 
 	 function _isFileTracked(file) {
-	         return svn(["status", "-u", file]).then(function (stdout) {
+	         return svn(["status", file]).then(function (stdout) {
 	             if (!stdout) { return false; }
 				 return stdout.split("\n")[0].substring(0,1).trim() != '?';
 	         });
@@ -612,7 +615,7 @@ define(function (require, exports) {
 	}
 
     function clean() {
-        return svn(["clean", "-f", "-d"]);
+        return svn(["cleanup"]);
     }
 
     function getFilesFromCommit(hash) {

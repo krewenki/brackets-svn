@@ -695,24 +695,21 @@ define(function (require, exports) {
         $tableContainer.find("#git-history-list").remove();
         $tableContainer.find(".git-edited-list").show();
 
-        var p1 = Svn.status();
+        var p1 = Svn.status(true);
 
         //- push button
-        var $pushBtn = $gitPanel.find(".git-push");
-        var p2 = Svn.getCommitsAhead().then(function (commits) {
-            $pushBtn.children("span").remove();
-            if (commits.length > 0) {
-                $pushBtn.append($("<span/>").text(" (" + commits.length + ")"));
-            }
-        }).catch(function () {
-            $pushBtn.children("span").remove();
-        });
-
-        //- Clone button
-        $gitPanel.find(".git-clone").prop("disabled", false);
+        //var $pushBtn = $gitPanel.find(".git-push");
+        // var p2 = Svn.getCommitsAhead().then(function (commits) {
+        //     $pushBtn.children("span").remove();
+        //     if (commits.length > 0) {
+        //         $pushBtn.append($("<span/>").text(" (" + commits.length + ")"));
+        //     }
+        // }).catch(function () {
+        //     $pushBtn.children("span").remove();
+        // });
 
         // FUTURE: who listens for this?
-        return Promise.all([p1, p2]);
+        return Promise.all([p1]);
     }
 
     function toggle(bool) {
