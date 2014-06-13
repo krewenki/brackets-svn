@@ -944,7 +944,6 @@ define(function (require, exports) {
             })
             .on("click", ".change-user-name", changeUserName)
             .on("click", ".change-user-email", changeUserEmail)
-            .on("click", ".undo-last-commit", undoLastLocalCommit)
             .on("click", ".git-bash", EventEmitter.emitFactory(Events.TERMINAL_OPEN))
             .on("click", ".reset-all", discardAllChanges);
 
