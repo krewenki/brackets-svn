@@ -530,7 +530,8 @@ define(function (require, exports) {
                 return 0;
             });
         }).then(function (results) {
-            EventEmitter.emit(Events.GIT_STATUS_RESULTS, results);
+			if(remote)
+				EventEmitter.emit(Events.GIT_STATUS_RESULTS, results);
             return results;
         });
     }
@@ -543,7 +544,22 @@ define(function (require, exports) {
 	}
 
     function getDiffOfStagedFiles() {
-        return svn(["diff", "--git"]);
+		var args = ["diff", "--git"];
+		var files = [];
+		var numberOfFiles = $('.check-one').length;
+		var numberOfCheckedFiles = 0;
+		$('.check-one').each(function(){
+			if($(this).is(':checked')){
+				numberOfCheckedFiles++;
+				files.push( $(this).parent().parent().attr('x-file') );		
+			}
+		});
+		if(numberOfCheckedFiles > 0){
+			for(var i in files){
+				args.push(files[i]);
+			}
+		}
+        return svn(args);
     }
 
     function getListOfStagedFiles() {

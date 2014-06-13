@@ -543,10 +543,8 @@ define(function (require, exports) {
 
         // Disable button (it will be enabled when selecting files after reset)
         Utils.setLoading($gitPanel.find(".git-commit"));
-
         // First reset staged files, then add selected files to the index.
         Svn.status().then(function (files) {
-			
             files = _.filter(files, function (file) {
                 return file.status.indexOf(Svn.FILE_STATUS.MODIFIED) !== -1;
             });
@@ -576,14 +574,6 @@ define(function (require, exports) {
                     }
                 }
 
-                queue = queue.then(function () {
-                    // stage the files again to include stripWhitespace changes
-                    // do not stage deleted files
-                    if (!isDeleted) {
-                       // return Svn.stage(fileObj.file, updateIndex);
-                    }
-                });
-
                 // do a code inspection for the file, if it was not deleted
                 if (codeInspectionEnabled && !isDeleted) {
                     queue = queue.then(function () {
@@ -600,12 +590,13 @@ define(function (require, exports) {
 
                 promises.push(queue);
             });
+			
             return Promise.all(promises).then(function () {
                 // All files are in the index now, get the diff and show dialog.
                 return _getStagedDiff().then(function (diff) {
                     return _showCommitDialog(diff, lintResults, prefilledMessage);
                 });
-            });
+			});
         }).catch(function (err) {
             ErrorHandler.showError(err, "Preparing commit dialog failed");
         }).finally(function () {
@@ -810,15 +801,6 @@ define(function (require, exports) {
 
                 lastCheckOneClicked = file;
 
-               /* if (isChecked) {
-                    Svn.stage(file, status === Svn.FILE_STATUS.DELETED).then(function () {
-                        Svn.status();
-                    });
-                } else {
-                    Svn.unstage(file).then(function () {
-                        Svn.status();
-                    });
-                } */
             })
             .on("dblclick", ".check-one", function (e) {
                 e.stopPropagation();
@@ -998,20 +980,6 @@ define(function (require, exports) {
     }
 
     // Event listeners
-    EventEmitter.on(Events.GIT_EMAIL_CHANGED, function (email) {
-        $gitPanel.find(".git-user-email").text(email);
-    });
-
-    EventEmitter.on(Events.GIT_REMOTE_AVAILABLE, function () {
-        $gitPanel.find(".git-pull").prop("disabled", false);
-        $gitPanel.find(".git-push").prop("disabled", false);
-    });
-
-    EventEmitter.on(Events.GIT_REMOTE_NOT_AVAILABLE, function () {
-        $gitPanel.find(".git-pull").prop("disabled", true);
-        $gitPanel.find(".git-push").prop("disabled", true);
-    });
-
     EventEmitter.on(Events.BRACKETS_CURRENT_DOCUMENT_CHANGE, function () {
         if (!gitPanel) { return; }
         refreshCurrentFile();
