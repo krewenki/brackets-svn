@@ -546,6 +546,7 @@ define(function (require, exports) {
 
         // First reset staged files, then add selected files to the index.
         Svn.status().then(function (files) {
+			
             files = _.filter(files, function (file) {
                 return file.status.indexOf(Svn.FILE_STATUS.MODIFIED) !== -1;
             });
