@@ -487,16 +487,22 @@ define(function (require, exports) {
             var needReset = [],
                 results = [],
                 lines = stdout.split("\n");
-				lines.pop();
+				if(remote){
+					lines.pop();					
+				}
 
+			
+				
+			
             lines.forEach(function (line) {
                 var statusStaged = line.substring(0, 1),
                     statusUnstaged = line.substring(1, 2),
                     status = [],
-                    file = _unquote(line.substring(10).match(/ [a-zA-Z/ _.]*/gm).pop().trim());
+					offset = remote ? 10 : 7,
+                    file = _unquote(line.substring(offset).match(/ [a-zA-Z/ _.]*/gm).pop().trim());
 
                 var statusChar = line.substring(0,1);
-				var outOfDate  = line.substring(9,1).trim() == '*';
+				var outOfDate  = remote && line.substring(9,1).trim() == '*';
 				if(outOfDate){
 					status.push(FILE_STATUS.OUTOFDATE);
 				}
@@ -506,7 +512,7 @@ define(function (require, exports) {
                         	status.push(FILE_STATUS.UNMODIFIED);
                         break;
                     case "!":
-                        status.push(FILE_STATUS.IGNORED);
+                        status.push(FILE_STATUS.DELETED);
                         break;
                     case "?":
                         status.push(FILE_STATUS.UNTRACKED);

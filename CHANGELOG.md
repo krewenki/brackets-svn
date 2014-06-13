@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.5
+Local diffs for commits actually work. 
+
 ## 0.0.4
 Now that the svn panel works, the next few releases will be all about making it work as quickly as possible, and removing a lot of the extras carried over from the git extension
 
