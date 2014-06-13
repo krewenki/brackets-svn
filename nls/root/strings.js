@@ -103,7 +103,6 @@ define({
     SVN_DIFF:                           "SVN diff &mdash;",
     GIT_PULL_RESPONSE:                  "Git Pull response",
     GIT_PUSH_RESPONSE:                  "Git Push response",
-    GIT_REMOTES:                        "Git remotes",
     GIT_SETTINGS:                       "SVN Settings\u2026",
     GOTO_NEXT_GIT_CHANGE:               "Go to next Git change",
     GOTO_PREVIOUS_GIT_CHANGE:           "Go to previous Git change",

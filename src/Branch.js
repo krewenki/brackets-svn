@@ -169,20 +169,6 @@ define(function (require, exports) {
                     }
                 });
 
-                _reloadBranchSelect($select, branches);
-                dialog.getElement().find(".fetchBranches").on("click", function () {
-                    var $this = $(this);
-                    ProgressDialog.show(Git.fetchAllRemotes())
-                        .then(function () {
-                            return Git.getAllBranches().then(function (branches) {
-                                $this.prop("disabled", true).attr("title", "Already fetched");
-                                _reloadBranchSelect($select, branches);
-                            });
-                        }).catch(function (err) {
-                            throw ErrorHandler.showError(err, "Fetching remote information failed");
-                        });
-                });
-
                 dialog.getElement().find("input").focus();
                 dialog.done(function (buttonId) {
                     if (buttonId === "ok") {

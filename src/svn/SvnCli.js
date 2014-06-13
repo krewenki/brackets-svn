@@ -147,11 +147,6 @@ define(function (require, exports) {
                     currentBranch = true;
                 }
 
-                if (name.indexOf("remotes/") === 0) {
-                    name = name.substring("remotes/".length);
-                    remote = name.substring(0, name.indexOf("/"));
-                }
-
                 var sortName = name.toLowerCase();
                 if (remote) {
                     sortName = sortName.substring(remote.length + 1);
