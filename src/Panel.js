@@ -858,34 +858,6 @@ define(function (require, exports) {
 
     }
 
-    function changeUserName() {
-       /* return Svn.getConfig("user.name").then(function (currentUserName) {
-            return Utils.askQuestion(Strings.CHANGE_USER_NAME, Strings.ENTER_NEW_USER_NAME, {defaultValue: currentUserName})
-                .then(function (userName) {
-                    if (!userName.length) { userName = currentUserName; }
-                    return Svn.setConfig("user.name", userName).catch(function (err) {
-                        ErrorHandler.showError(err, "Impossible change username");
-                    }).then(function () {
-                        EventEmitter.emit(Events.GIT_USERNAME_CHANGED, userName);
-                    });
-                });
-        });*/
-    }
-
-    function changeUserEmail() {
-/*        return Svn.getConfig("user.email").then(function (currentUserEmail) {
-            return Utils.askQuestion(Strings.CHANGE_USER_EMAIL, Strings.ENTER_NEW_USER_EMAIL, {defaultValue: currentUserEmail})
-                .then(function (userEmail) {
-                    if (!userEmail.length) { userEmail = currentUserEmail; }
-                    return Svn.setConfig("user.email", userEmail).catch(function (err) {
-                        ErrorHandler.showError(err, "Impossible change user email");
-                    }).then(function () {
-                        EventEmitter.emit(Events.GIT_EMAIL_CHANGED, userEmail);
-                    });
-                });
-        }); */
-    }
-
     function discardAllChanges() {
         return Utils.askQuestion(Strings.RESET_LOCAL_REPO, Strings.RESET_LOCAL_REPO_CONFIRM, { booleanResponse: true })
             .then(function (response) {
@@ -942,19 +914,8 @@ define(function (require, exports) {
                     Menus.getContextMenu("git-panel-context-menu").open(e);
                 }, 1);
             })
-            .on("click", ".change-user-name", changeUserName)
-            .on("click", ".change-user-email", changeUserEmail)
             .on("click", ".git-bash", EventEmitter.emitFactory(Events.TERMINAL_OPEN))
             .on("click", ".reset-all", discardAllChanges);
-
-        /* Put here event handlers for advanced actions
-        if (Preferences.get("enableAdvancedFeatures")) {
-
-            $gitPanel
-                .on("click", target, function);
-
-         }
-         */
 
         // Attaching table handlers
         attachDefaultTableHandlers();
@@ -1037,10 +998,6 @@ define(function (require, exports) {
     }
 
     // Event listeners
-    EventEmitter.on(Events.GIT_USERNAME_CHANGED, function (userName) {
-        $gitPanel.find(".git-user-name").text(userName);
-    });
-
     EventEmitter.on(Events.GIT_EMAIL_CHANGED, function (email) {
         $gitPanel.find(".git-user-email").text(email);
     });

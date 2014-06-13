@@ -15,7 +15,6 @@ define(function (require, exports) {
     exports.BRACKETS_FILE_CHANGED = "brackets.file.changed";
 
     // Git events
-    exports.GIT_USERNAME_CHANGED = "git.username.changed";
     exports.GIT_EMAIL_CHANGED = "git.email.changed";
     exports.GIT_COMMITED = "git.commited";
 
