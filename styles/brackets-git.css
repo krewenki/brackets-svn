@@ -608,12 +608,7 @@
   -o-user-select: text;
   user-select: text;
 }
-#git-pull-dialog .modal-body {
-  max-height: 500px;
-}
-#git-pull-dialog .row-fluid label {
-  line-height: 28px;
-}
+
 /* Project tree */
 .jstree-brackets li.git-modified > a:before,
 #open-files-container li.git-modified > a:before {
