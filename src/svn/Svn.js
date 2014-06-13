@@ -49,18 +49,6 @@ define(function (require, exports) {
         });
     }
 
-    function getBranches() {
-        return SvnCli.getBranches().then(function (branches) {
-            return sortBranches(branches);
-        });
-    }
-
-    function getAllBranches() {
-        return SvnCli.getAllBranches().then(function (branches) {
-            return sortBranches(branches);
-        });
-    }
-
     function getHistory(skip) {
         return SvnCli.getHistory(skip);
     }
@@ -161,8 +149,6 @@ define(function (require, exports) {
 
     // Public API
     exports.pushToNewUpstream       = pushToNewUpstream;
-    exports.getBranches             = getBranches;
-    exports.getAllBranches          = getAllBranches;
     exports.getHistory              = getHistory;
     exports.getFileHistory          = getFileHistory;
     exports.resetIndex              = resetIndex;
