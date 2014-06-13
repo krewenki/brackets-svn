@@ -28,7 +28,6 @@ define(function (require, exports) {
     function initUi() {
         // FUTURE: do we really need to launch init from here?
         Panel.init();
-        //Branch.init();
         CloseNotModified.init();
         // Attach events
         $icon.on("click", Panel.toggle);
