@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.6
+Removing a bunch of unneeded code to speed things up. 
+
 ## 0.0.5
 Local diffs for commits actually work. 
 

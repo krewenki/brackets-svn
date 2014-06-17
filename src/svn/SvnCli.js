@@ -339,7 +339,7 @@ define(function (require, exports) {
                 commit.email      = commit.author+'@project.com';
                 commit.subject    = data[3].split("\n")[2].trim();
                 commit.body       = data[3].split("\n")[2].trim();
-				console.log(commit);
+				//console.log(commit);
                 return commit;
 
             });

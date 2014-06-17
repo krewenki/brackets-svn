@@ -4,7 +4,7 @@
     "title": "Brackets SVN",
     "description": "Integration of SVN into Brackets",
     "keywords": ["SVN", "subversion", "version-control", "source-control"],
-    "version": "0.0.5",
+    "version": "0.0.6",
 
     "license": "MIT",
     "homepage": "https://github.com/krewenki/brackets-svn",
