@@ -32,7 +32,7 @@ define(function (require, exports, module) {
     require(modules);
 
     // Load CSS
-    ExtensionUtils.loadStyleSheet(module, "styles/brackets-git.css");
+    ExtensionUtils.loadStyleSheet(module, "styles/brackets-svn.css");
     ExtensionUtils.loadStyleSheet(module, "styles/fonts/octicon.less");
 
     // Display settings panel on first start / changelog dialog on version change

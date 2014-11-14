@@ -663,6 +663,7 @@ define(function (require, exports) {
                 file.allowDelete = file.status.indexOf(Svn.FILE_STATUS.UNTRACKED) !== -1;
                 file.allowUndo = !file.allowDelete && file.status.indexOf(Svn.FILE_STATUS.MODIFIED) !== -1;
 				file.allowUpdate = file.status.indexOf(Svn.FILE_STATUS.OUTOFDATE) !== -1;
+				file.allowAdd = file.status.indexOf(Svn.FILE_STATUS.UNTRACKED) > -1;
             });
             $tableContainer.append(Mustache.render(gitPanelResultsTemplate, {
                 files: files,
@@ -817,6 +818,10 @@ define(function (require, exports) {
                 e.stopPropagation();
                 handleGitDelete($(e.target).closest("tr").attr("x-file"));
             })
+			.on("click", ".btn-svn-add", function(e) {
+				e.stopPropagation();
+				handleSvnAdd($(e.target).closest("tr").attr("x-file"));
+			})
 			.on("click", ".btn-svn-update", function (e) {
 				e.stopPropagation();
 				handleSvnUpdate([$(e.target).closest("tr").attr("x-file")]);
