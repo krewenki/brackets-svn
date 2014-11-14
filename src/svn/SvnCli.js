@@ -539,7 +539,7 @@ define(function (require, exports) {
 	 function _isFileTracked(file) {
 	         return svn(["status", file]).then(function (stdout) {
 	             if (!stdout) { return false; }
-				 return stdout.split("\n")[0].substring(0,1).trim() != '?';
+				 return ['I','?'].indexOf(stdout.split("\n")[0].substring(0,1).trim()) == -1;
 	         });
 	}
 
